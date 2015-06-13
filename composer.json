@@ -1,5 +1,5 @@
 {
-    "name": "hmcsoft/mvc",
+    "name": "hmc-soft/mvc",
     "description": "Simple MVC Framework",
     "type": "project",
     "require": {
