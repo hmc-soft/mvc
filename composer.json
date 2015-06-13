@@ -1,0 +1,22 @@
+{
+    "name": "hmcsoft/mvc",
+    "description": "Simple MVC Framework",
+    "type": "project",
+    "require": {
+        "tedivm/jshrink": "~1.0",
+        "katzgrau/klogger":"dev-master",
+        "php": ">=5.4.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ebben Feagan",
+            "email": "ebben@hmc-soft.com"
+        }
+    ],
+    "autoload":{
+        "psr-4":{"":"app/"},
+        "files":["app/Modules/password.php"]
+    },
+    "minimum-stability": "dev"
+}
