@@ -98,6 +98,25 @@ class Url
         return $slug;
     }
 
+    public static function parse($url) {
+      return parse_url($url);
+    }
+
+    public static function query($var = null)
+    {
+      if($var == null) $var = $_SERVER['QUERY_STRING'];
+      $var  = html_entity_decode($var);
+      $var  = explode('&', $var);
+      $arr  = array();
+
+      foreach($var as $val) {
+        $x = explode('=', $val);
+        if(count($x) > 1) $arr[$x[0]] = $x[1];
+      }
+      unset($val, $x, $var);
+      return $arr;
+    }
+
     /**
      * Go to the previous url.
      */
