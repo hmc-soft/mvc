@@ -43,15 +43,15 @@ class Logger
     private static $logger = null;
 
     public static function init($args = array()) {
-      if(isset($args['base-dir'])){
-        self::$logDir = $args['base-dir'];
+      if(isset($args['DIR'])){
+        self::$logDir = $args['DIR'];
       }
-      if(isset($args['email-errors'])){
-        self::$emailError = $args['email-errors'];
+      if(isset($args['EMAIL'])){
+        self::$emailError = $args['EMAIL'];
       }
 
       if(self::$logger == null) {
-        self::$logger = new \Katzgrau\KLogger\Logger(self::$logDir,(isset($args['log-level'])? $args['log-level'] : \Psr\Log\LogLevel::ERROR));
+        self::$logger = new \Katzgrau\KLogger\Logger(self::$logDir,(isset($args['LEVEL'])? $args['LEVEL'] : \Psr\Log\LogLevel::ERROR));
       }
 
     }
@@ -221,9 +221,9 @@ class Logger
     {
         if (self::$emailError == true) {
             $mail = new Mail();
-            $mail->setFrom(SITEEMAIL);
-            $mail->addAddress(SITEEMAIL);
-            $mail->subject('New error on '.SITETITLE);
+            $mail->setFrom(\Core\Config::SITE_EMAIL());
+            $mail->addAddress(\Core\Config::SITE_EMAIL());
+            $mail->subject('New error on '.\Core\Config::SITE_TITLE());
             $mail->body($message);
             $mail->send();
         }

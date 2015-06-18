@@ -52,7 +52,7 @@ class Assets
 
     public static function combine_js($files,$outputdir)
     {
-      if(ENVIRONMENT == 'development') {
+      if(\Core\Config::SITE_ENVIRONMENT() == 'development') {
         Assets::js($files);
         return;
       }
@@ -63,7 +63,7 @@ class Assets
       if(file_exists($outputdir.$hashFileName.'.js')) {
         $hfntime = filemtime($outputdir.$hashFileName.'.js');
         foreach($ofiles as $vfile) {
-          $file = str_replace(SITEURL,SITEROOT,$vfile);
+          $file = str_replace(\Core\Config::SITE_URL(),\Core\Config::SITE_PATH(),$vfile);
           if(!$dirty){
             $fmtime = filemtime($file);
             if($fmtime > $hfntime)  {
@@ -77,11 +77,10 @@ class Assets
       if($dirty) {
         $buffer = "";
         foreach ($ofiles as $vfile) {
-          $jsFile = str_replace(SITEURL,SITEROOT,$vfile);
+          $jsFile = str_replace(\Core\Config::SITE_URL(),\Core\Config::SITE_PATH(),$vfile);
           $buffer .= "\n".file_get_contents($jsFile);
         }
 
-        // Enable GZip encoding.
         ob_start();
 
         // Write everything out
@@ -94,7 +93,7 @@ class Assets
         file_put_contents(SITEROOT.$outputdir.$hashFileName.'.js',$minifiedCode);
 
       }
-      static::resource(str_replace(':||','://',str_replace('//','/',str_replace('://',':||',SITEURL.$outputdir.$hashFileName.'.js'))),'js');
+      static::resource(str_replace(':||','://',str_replace('//','/',str_replace('://',':||',\Core\Config::SITE_URL().$outputdir.$hashFileName.'.js'))),'js');
     }
 
     /**
@@ -109,7 +108,7 @@ class Assets
 
     public static function combine_css($files,$outputdir)
     {
-      if(ENVIRONMENT == 'development') {
+      if(\Core\Config::SITE_ENVIRONMENT() == 'development') {
         Assets::css($files);
         return;
       }
@@ -120,7 +119,7 @@ class Assets
       if(file_exists($outputdir.$hashFileName.'.css')) {
         $hfntime = filemtime($outputdir.$hashFileName.'.css');
         foreach($ofiles as $vfile) {
-          $file = str_replace(SITEURL,SITEROOT,$vfile);
+          $file = str_replace(\Core\Config::SITE_URL(),\Core\Config::SITE_PATH(),$vfile);
           if(!$dirty){
             $fmtime = filemtime($file);
             if($fmtime > $hfntime)  {
@@ -134,7 +133,7 @@ class Assets
       if($dirty) {
         $buffer = "";
         foreach ($ofiles as $vfile) {
-          $cssFile = str_replace(SITEURL,SITEROOT,$vfile);
+          $cssFile = str_replace(\Core\Config::SITE_URL(),\Core\Config::SITE_PATH(),$vfile);
           $buffer .= "\n".file_get_contents($cssFile);
         }
 
@@ -154,9 +153,9 @@ class Assets
 
         $fc = ob_get_clean();
 
-        file_put_contents(SITEROOT.$outputdir.$hashFileName.'.css',$fc);
+        file_put_contents(\Core\Config::SITE_PATH().$outputdir.$hashFileName.'.css',$fc);
 
       }
-      static::resource(str_replace(':||','://',str_replace('//','/',str_replace('://',':||',SITEURL.$outputdir.$hashFileName.'.css'))),'css');
+      static::resource(str_replace(':||','://',str_replace('//','/',str_replace('://',':||',\Core\Config::SITE_URL().$outputdir.$hashFileName.'.css'))),'css');
     }
 }

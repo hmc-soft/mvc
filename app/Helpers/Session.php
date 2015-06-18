@@ -42,25 +42,27 @@ class Session
     public static function init($args = null)
     {
         if (self::$sessionStarted == false) {
-          if(isset($args['session-name'])) {
-            session_name($args['session-name']);
+          if(isset($args['NAME'])) {
+            session_name($args['NAME']);
           }
           session_start();
           self::$sessionStarted = true;
         }
         if($args != null) {
-          if(isset($args['key'])) {
+          if(isset($args['ENCRYPT']) && $args['ENCRYPT'] == true){
             self::$sessionEncrypted = true;
-            self::$encKey = $args['key'];
-          }
-          if(isset($args['algo'])) {
-            self::$encAlgo = $args['algo'];
-          }
-          if(isset($args['mode'])) {
-            self::$encMode = $args['mode'];
-          }
-          if(isset($args['iv'])) {
-            self::$encIV = $args['iv'];
+            if(isset($args['KEY'])) {
+              self::$encKey = $args['KEY'];
+            }
+            if(isset($args['ALGO'])) {
+              self::$encAlgo = $args['ALGO'];
+            }
+            if(isset($args['MODE'])) {
+              self::$encMode = $args['MODE'];
+            }
+            if(isset($args['IV'])) {
+              self::$encIV = $args['IV'];
+            }
           }
         }
     }
@@ -78,10 +80,10 @@ class Session
         */
         if (is_array($key) && $value === false) {
             foreach ($key as $name => $value) {
-                $_SESSION[SESSION_PREFIX.$name] = self::encrypt($value);
+                $_SESSION[\Core\Config::SESSION_PREFIX().$name] = self::encrypt($value);
             }
         } else {
-            $_SESSION[SESSION_PREFIX.$key] = self::encrypt($value);
+            $_SESSION[\Core\Config::SESSION_PREFIX().$key] = self::encrypt($value);
         }
     }
 
@@ -92,8 +94,8 @@ class Session
      */
     public static function pull($key)
     {
-        $value = self::decrypt($_SESSION[SESSION_PREFIX.$key]);
-        unset($_SESSION[SESSION_PREFIX.$key]);
+        $value = self::decrypt($_SESSION[\Core\Config::SESSION_PREFIX().$key]);
+        unset($_SESSION[\Core\Config::SESSION_PREFIX().$key]);
         return $value;
     }
 
@@ -107,12 +109,12 @@ class Session
     public static function get($key, $secondkey = false)
     {
         if ($secondkey == true) {
-            if (isset($_SESSION[SESSION_PREFIX.$key][$secondkey])) {
-                return self::decrypt($_SESSION[SESSION_PREFIX.$key][$secondkey]);
+            if (isset($_SESSION[\Core\Config::SESSION_PREFIX().$key][$secondkey])) {
+                return self::decrypt($_SESSION[\Core\Config::SESSION_PREFIX().$key][$secondkey]);
             }
         } else {
-            if (isset($_SESSION[SESSION_PREFIX.$key])) {
-                return self::decrypt($_SESSION[SESSION_PREFIX.$key]);
+            if (isset($_SESSION[\Core\Config::SESSION_PREFIX().$key])) {
+                return self::decrypt($_SESSION[\Core\Config::SESSION_PREFIX().$key]);
             }
         }
         return false;
@@ -155,7 +157,7 @@ class Session
                 session_unset();
                 session_destroy();
             } else {
-                unset($_SESSION[SESSION_PREFIX.$key]);
+                unset($_SESSION[\Core\Config::SESSION_PREFIX().$key]);
             }
         }
     }

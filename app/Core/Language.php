@@ -24,8 +24,11 @@ class Language
      * @param  string $name
      * @param  string $code
      */
-    public function load($name, $code = LANGUAGE_CODE)
+    public function load($name, $code = null)
     {
+        if($code == null) {
+          $code = \Core\Config::SITE_LANGUAGE();
+        }
         // lang file
         $file = "app/language/$code/$name.php";
 
@@ -61,8 +64,11 @@ class Language
      * @param  string $code  optional, language code
      * @return string
      */
-    public static function show($value, $name, $code = LANGUAGE_CODE)
+    public static function show($value, $name, $code = null)
     {
+        if($code == null) {
+          $code = \Core\Config::SITE_LANGUAGE();
+        }
         // lang file
         $file = "app/language/$code/$name.php";
 

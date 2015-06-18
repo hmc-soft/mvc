@@ -31,7 +31,7 @@ require('Exception.php');
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  */
-class phpmailer
+class PhpMailer
 {
     /**
      * The PHPMailer Version number.

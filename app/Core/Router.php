@@ -49,6 +49,16 @@ class Router
         array_push(self::$callbacks, $callback);
     }
 
+    public static function parseConfig(array $routes) {
+      foreach($routes as $route) {
+        $method = strtolower($route[0]);
+        $url = $route[1];
+        $call = $route[2];
+
+        call_user_func(array('\Core\Router',$method),$url,$call);
+      }
+    }
+
     /**
      * Defines callback if route is not found
      * @param   string $callback
@@ -109,20 +119,20 @@ class Router
         $parts = explode('/', $uri);
 
         $controller = array_shift($parts);
-        $controller = $controller ? $controller : DEFAULT_CONTROLLER;
+        //$controller = $controller ? $controller : DEFAULT_CONTROLLER;
 
         $method = array_shift($parts);
-        $method = $method ? $method : DEFAULT_METHOD;
+        //$method = $method ? $method : DEFAULT_METHOD;
 
         $args = !empty($parts) ? $parts : array();
 
         // Check for file
-        if (!file_exists("App/Controllers/$controller.php")) {
+        if (!file_exists("app/Controllers/$controller.php")) {
             return false;
         }
 
         $controller = ucwords($controller);
-        $controller = "\Controllers\\$controller";
+        $controller = "\\Controllers\\$controller";
         $c = new $controller;
 
         if (method_exists($c, $method)) {

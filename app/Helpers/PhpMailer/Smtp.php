@@ -328,58 +328,7 @@ class SMTP
                     return false;
                 }
                 break;
-            case 'NTLM':
-                /*
-                 * ntlm_sasl_client.php
-                 * Bundled with Permission
-                 *
-                 * How to telnet in windows:
-                 * http://technet.microsoft.com/en-us/library/aa995718%28EXCHG.65%29.aspx
-                 * PROTOCOL Docs http://curl.haxx.se/rfc/ntlm.html#ntlmSmtpAuthentication
-                 */
-                require_once 'extras/ntlm_sasl_client.php';
-                $temp = new stdClass();
-                $ntlm_client = new ntlm_sasl_client_class;
-                //Check that functions are available
-                if (!$ntlm_client->Initialize($temp)) {
-                    $this->error = array('error' => $temp->error);
-                    if ($this->do_debug >= 1) {
-                        $this->edebug(
-                            'You need to enable some modules in your php.ini file: '
-                            . $this->error['error']
-                        );
-                    }
-                    return false;
-                }
-                //msg1
-                $msg1 = $ntlm_client->TypeMsg1($realm, $workstation); //msg1
-
-                if (!$this->sendCommand(
-                    'AUTH NTLM',
-                    'AUTH NTLM ' . base64_encode($msg1),
-                    334
-                )
-                ) {
-                    return false;
-                }
-                //Though 0 based, there is a white space after the 3 digit number
-                //msg2
-                $challenge = substr($this->last_reply, 3);
-                $challenge = base64_decode($challenge);
-                $ntlm_res = $ntlm_client->NTLMResponse(
-                    substr($challenge, 24, 8),
-                    $password
-                );
-                //msg3
-                $msg3 = $ntlm_client->TypeMsg3(
-                    $ntlm_res,
-                    $username,
-                    $realm,
-                    $workstation
-                );
-                // send encoded username
-                return $this->sendCommand('Username', base64_encode($msg3), 235);
-                break;
+            
             case 'CRAM-MD5':
                 // Start authentication
                 if (!$this->sendCommand('AUTH CRAM-MD5', 'AUTH CRAM-MD5', 334)) {

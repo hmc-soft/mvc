@@ -1,0 +1,6 @@
+{
+  "ROUTES": [
+    ["GET","","Controllers\\Welcome@index"],
+    ["GET","subpage","Controllers\\Welcome@subPage"]
+  ]
+}

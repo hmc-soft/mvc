@@ -28,11 +28,11 @@ class Database extends PDO
     {
         // Determining if exists or it's not empty, then use default group defined in config
         $group = !$group ? array (
-            'type' => DB_TYPE,
-            'host' => DB_HOST,
-            'name' => DB_NAME,
-            'user' => DB_USER,
-            'pass' => DB_PASS
+            'type' => \Core\Config::DATABASE_TYPE(),
+            'host' => \Core\Config::DATABASE_HOST(),
+            'name' => \Core\Config::DATABASE_NAME(),
+            'user' => \Core\Config::DATABASE_USER(),
+            'pass' => \Core\Config::DATABASE_PASS()
         ) : $group;
 
         // Group information

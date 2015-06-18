@@ -22,7 +22,7 @@ class Url
     public static function redirect($url = null, $fullpath = false)
     {
         if ($fullpath == false) {
-            $url = DIR . $url;
+            $url = \Core\Config::SITE_URL() . $url;
         }
 
         header('Location: '.$url);
@@ -36,9 +36,9 @@ class Url
     public static function templatePath($custom = false)
     {
         if ($custom == true) {
-            return DIR.'app/templates/'.$custom.'/';
+            return \Core\Config::SITE_URL().'app/templates/'.$custom.'/';
         } else {
-            return DIR.'app/templates/'.TEMPLATE.'/';
+            return \Core\Config::SITE_URL().'app/templates/'.\Core\Config::SITE_TEMPLATE().'/';
         }
     }
 
@@ -49,9 +49,9 @@ class Url
     public static function relativeTemplatePath($admin = false)
     {
         if ($admin == false) {
-            return "app/templates/".DEFAULT_TEMPLATE."/";
+            return "app/templates/".\Core\Config::SITE_TEMPLATE()."/";
         } else {
-            return "app/templates/".ADMIN_TEMPLATE."/";
+            return "app/templates/".\Core\Config::SITE_TEMPLATE()."/";
         }
     }
 
