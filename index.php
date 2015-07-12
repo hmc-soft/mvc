@@ -11,7 +11,7 @@ if (file_exists('vendor/autoload.php')) {
 $configFile = '.app_config.json';
 
 $config = null;
-$apcEnabled = ini_get('apc.enabled');
+$apcEnabled = (bool)ini_get('apc.enabled');
 if($apcEnabled && apc_exists('hmcsoftmvc-config')) {
   if(file_exists($configFile)) {
     $lastModTime = filemtime($configFile);
