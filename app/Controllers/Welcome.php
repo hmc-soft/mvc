@@ -3,6 +3,7 @@ namespace Controllers;
 
 use Core\View;
 use Core\Controller;
+use Core\Language;
 
 /*
  * Welcome controller
@@ -16,21 +17,12 @@ class Welcome extends Controller
 {
 
     /**
-     * Call the parent construct
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->language->load('welcome');
-    }
-
-    /**
      * Define Index page title and load template files
      */
     public function index()
     {
-        $data['title'] = $this->language->tr('welcome_text');
-        $data['welcome_message'] = $this->language->tr('welcome_message');
+        $data['title'] = Language::tr('welcome_text');
+        $data['welcome_message'] = Language::tr('welcome_message');
 
         View::renderTemplate('header', $data);
         View::render('welcome/welcome', $data);
@@ -42,8 +34,8 @@ class Welcome extends Controller
      */
     public function subPage()
     {
-        $data['title'] = $this->language->tr('subpage_text');
-        $data['welcome_message'] = $this->language->tr('subpage_message');
+        $data['title'] = Language::tr('subpage_text');
+        $data['welcome_message'] = Language::tr('subpage_message');
 
         View::renderTemplate('header', $data);
         View::render('welcome/subpage', $data);

@@ -40,7 +40,7 @@ class Hooks
         ));
 
         //load modules
-        self::loadPlugins('app/Modules/');
+        self::loadPlugins('app/Framework/Modules/');
         $instance = new self();
         self::$instances[$id] = $instance;
         return $instance;
