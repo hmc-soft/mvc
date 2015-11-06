@@ -21,7 +21,7 @@ class Welcome extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->language->load('Welcome');
+        $this->language->load('welcome');
     }
 
     /**
@@ -29,8 +29,8 @@ class Welcome extends Controller
      */
     public function index()
     {
-        $data['title'] = $this->language->get('welcome_text');
-        $data['welcome_message'] = $this->language->get('welcome_message');
+        $data['title'] = $this->language->tr('welcome_text');
+        $data['welcome_message'] = $this->language->tr('welcome_message');
 
         View::renderTemplate('header', $data);
         View::render('welcome/welcome', $data);
@@ -42,11 +42,11 @@ class Welcome extends Controller
      */
     public function subPage()
     {
-        $data['title'] = $this->language->get('subpage_text');
-        $data['welcome_message'] = $this->language->get('subpage_message');
+        $data['title'] = $this->language->tr('subpage_text');
+        $data['welcome_message'] = $this->language->tr('subpage_message');
 
         View::renderTemplate('header', $data);
-        View::render('Welcome/SubPage', $data);
+        View::render('welcome/subpage', $data);
         View::renderTemplate('footer', $data);
     }
 }

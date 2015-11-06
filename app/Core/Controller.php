@@ -4,15 +4,6 @@ namespace Core;
 use Core\View;
 use Core\Language;
 
-/*
- * controller - base controller
- *
- * @author David Carr - dave@simplemvcframework.com
- * @version 2.2
- * @date June 27, 2014
- * @date updated May 18 2015
- */
-
 abstract class Controller
 {
     /**

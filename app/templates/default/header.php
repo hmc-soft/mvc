@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title></title>
+    <title><?php echo $data['title']; ?> | <?php echo Core\Config::SITE_TITLE(); ?></title>
     <?php
-    //do css here
+      \Helpers\Hooks::run('meta');
+      \Helpers\Hooks::run('css');
+      //use \Helpers\Assets::css or combine_css to inject stylesheets
     ?>
   </head>
   <body>

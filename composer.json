@@ -7,6 +7,9 @@
         "katzgrau/klogger":"dev-master",
         "php": ">=5.4.0"
     },
+    "suggest": {
+      "ext-mcrypt": "Required for encrypted session support, highly recommended."
+    },
     "license": "MIT",
     "authors": [
         {

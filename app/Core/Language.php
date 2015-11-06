@@ -17,76 +17,79 @@ class Language
      * Variable holds array with language
      * @var array
      */
-    private $array;
+    private static $array;
+	private static $code;
+	private static $lastLoaded = null;
 
     /**
      * Load language function
      * @param  string $name
      * @param  string $code
      */
-    public function load($name, $code = null)
+    public static function load($name, $icode = null)
     {
-        if($code == null) {
-          $code = \Core\Config::SITE_LANGUAGE();
-        }
+
+        if($icode == null) {
+          self::$code = (\Core\Config::SITE_LANGUAGE() !== '' ? \Core\Config::SITE_LANGUAGE() : 'en');
+        } else {
+			self::$code = $icode;
+		}
         // lang file
-        $file = "app/language/$code/$name.php";
+        $file = "app/language/".self::$code."/$name.php";
 
         // check if is readable
         if (is_readable($file)) {
             // require file
-            $this->array = include($file);
+			if(!isset(self::$array[$name]))
+				self::$array[$name] = array();
+			
+			if(empty(self::$array[$name][self::$code]))
+				self::$array[$name][self::$code] = include($file);
+			
+			self::$lastLoaded = $name;
+			return true;
         } else {
             // display error
-            echo Error::display("Could not load language file '$code/$name.php'");
-            die;
+            //echo Error::display("Could not load language file '".self::$code."/$name.php'");
+            //die;
+			return false;
         }
     }
 
     /**
+	 * Deprecated
      * Get element from language array by key
      * @param  string $value
      * @return string
      */
-    public function get($value)
+    /*public static function get($value)
     {
-        if (!empty($this->array[$value])) {
-            return $this->array[$value];
+        if (self::$lastLoaded != null && !empty(self::$array[self::$lastLoaded][self::$code][$value])) {
+            return self::$array[self::$lastLoaded][self::$code][$value];
         } else {
             return $value;
         }
-    }
+    }*/
 
     /**
      * Get lang for views
      * @param  string $value this is "word" value from language file
      * @param  string $name  name of file with language
-     * @param  string $code  optional, language code
+     * @param  string $default optional, used as default if $value not in lang file.
      * @return string
      */
-    public static function show($value, $name, $code = null)
+    public static function tr($value, $name = null, $def = null)
     {
-        if($code == null) {
-          $code = \Core\Config::SITE_LANGUAGE();
-        }
-        // lang file
-        $file = "app/language/$code/$name.php";
+        if($name == null && self::$lastLoaded != null)
+			$name = self::$lastLoaded;
 
-        // check if is readable
-        if (is_readable($file)) {
-            // require file
-            $array = include($file);
-        } else {
-            // display error
-            echo Error::display("Could not load language file '$code/$name.php'");
-            die;
-        }
-
-        // If
-        if (!empty($array[$value])) {
-            return $array[$value];
-        } else {
-            return $value;
-        }
+		self::load($name);
+		
+		if (!empty(self::$array[$name][self::$code] && isset(self::$array[$name][self::$code][$value]))) {
+			return self::$array[$name][self::$code][$value];
+		} else {
+			return $def ? $def : $value;
+		}
+        
     }
 }

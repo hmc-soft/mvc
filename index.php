@@ -8,57 +8,28 @@ if (file_exists('vendor/autoload.php')) {
     exit;
 }
 
+//Routes are defined in the config file.
 $configFile = '.app_config.json';
 
-$config = null;
-$apcEnabled = (bool)ini_get('apc.enabled');
-if($apcEnabled && apc_exists('hmcsoftmvc-config')) {
-  if(file_exists($configFile)) {
-    $lastModTime = filemtime($configFile);
-    $lastConfTime = 0;
-    if(apc_exists('hmcsoftmvc-config-updated')) {
-      $lastConfTime = apc_fetch('hmcsoftmvc-config-updated');
-    }
-    if($lastConfTime < $lastModTime) {
-      $config = json_decode(file_get_contents($configFile));
-      apc_store('hmcsoftmvc-config',$config);
-      apc_store('hmcsoftmvc-config-updated',$lastModTime);
-    } else {
-      $config = apc_fetch('hmcsoftmvc-config');
-    }
-  }
-} else {
-  if(is_readable($configFile)) {
-    $config = json_decode(file_get_contents($configFile));
-  }
-}
 //initiate config
-\Core\Config::init($config);
-
+$config = \Core\Config::init($configFile);
+\Helpers\Hooks::get();
+\Helpers\Hooks::addHook('headers','addNotice');
 //create alias for Router
 use \Core\Router;
-use \Helpers\Hooks;
-$hooks = Hooks::get();
 
-if(isset($config['ROUTES'])){ //Routes defined in the config file.
-  Router::parseConfig($config['ROUTES']);
-}
-
-if(isset($config['HOOKS']) && isset($config['HOOKS']['ROUTES'])) {
-  //These call a function on the controller to setup the routes.
-  //This is the preferred method for projects with a large number of routes.
-  foreach($config['HOOKS']['ROUTES'] as $route) {
-    Hooks::addHook('routes',$route);
-  }
-}
-
-$hooks->run('routes');
+//Initialize Router
+Router::init($config);
 
 //if no route found
-Router::error('Core\Error@index');
+//Router::error('Core\Error@index');
 
-//turn on old style routing
-Router::$fallback = false;
+//To route with the url/Controller/Method/args schema uncomment this.
+Router::$fallback = true;
 
 //execute matched routes
 Router::dispatch();
+
+function addNotice() {
+  \Core\View::addHeader('X-Uses: HMC-soft MVC');
+}

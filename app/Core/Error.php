@@ -30,19 +30,50 @@ class Error extends Controller
         $this->error = $error;
     }
 
+    public static function error404() {
+      View::addHeader("HTTP/1.0 404 Not Found");
+
+      $data['title'] = 'Page Not Found';
+      $data['error'] = 'Page Not Found';
+
+      View::renderTemplate('header', $data);
+      View::render('error/404', $data);
+      View::renderTemplate('footer', $data);
+    }
+
+    public static function showError($errNum, $info = null) {
+
+      ob_get_clean();
+      $defError = "An internal server error has occured.";
+      switch($errNum) {
+        case 404:
+          Error::error404();
+          return;
+          break;
+
+        case 500:
+        default:
+          break;
+      }
+		if($info != null)
+			Logger::error('['.$errNum.'] ' . $info);
+		
+      $data['title'] = "Internal Server Error";
+      $data['error'] = $info != null ? (Config::SITE_ENVIRONMENT() == 'development' ? $defError . '<br/>'. $info : $defError) : $defError;
+
+      View::addHeader("HTTP/1.0 500 Internal Server Error");
+      View::renderTemplate('header', $data);
+      View::render('error/500', $data);
+      View::renderTemplate('footer', $data);
+      die();
+    }
+
     /**
      * load a 404 page with the error message
      */
     public function index()
     {
-        header("HTTP/1.0 404 Not Found");
-
-        $data['title'] = '404';
-        $data['error'] = $this->error;
-
-        View::renderTemplate('header', $data);
-        View::render('error/404', $data);
-        View::renderTemplate('footer', $data);
+      Error::showError(404);
     }
 
     /**

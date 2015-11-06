@@ -1,6 +1,6 @@
 {
-  "ROUTES": [
-    ["GET","","Controllers\\Welcome@index"],
-    ["GET","subpage","Controllers\\Welcome@subPage"]
-  ]
+  "SITE": {
+    "URL": "http://localhost/ri",
+    "PATH": "/ri"
+  }
 }

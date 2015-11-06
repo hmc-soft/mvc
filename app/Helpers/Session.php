@@ -44,6 +44,8 @@ class Session
         if (self::$sessionStarted == false) {
           if(isset($args['NAME'])) {
             session_name($args['NAME']);
+          } else {
+            session_name('HMVC-DEFSESSION');
           }
           session_start();
           self::$sessionStarted = true;

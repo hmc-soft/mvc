@@ -62,9 +62,8 @@ class Database extends PDO
 
             return $instance;
         } catch (PDOException $e) {
-            //in the event of an error record the error to ErrorLog.html
-            Logger::newMessage($e);
-            Logger::customErrorMsg();
+            $msg = Logger::buildExceptionMessage($e);
+            \Core\Error::showError(501,$msg);
         }
     }
 
@@ -86,7 +85,7 @@ class Database extends PDO
      * @param  string $class     class name
      * @return array            returns an array of records
      */
-    public function select($sql, $array = array(), $fetchMode = PDO::FETCH_OBJ, $class = '')
+    public function select($sql, $array = array(), $fetchMode = PDO::FETCH_NAMED, $class = '')
     {
         $stmt = $this->prepare($sql);
         foreach ($array as $key => $value) {

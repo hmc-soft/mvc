@@ -95,12 +95,17 @@ class Logger
     */
     public static function exceptionHandler($e)
     {
+      if(Config::SITE_ENVIRONMENT() == 'development') {
+        Error::showError(500,self::buildExceptionMessage($e));
+        die();
+      }
       if(self::$logger != null) {
         self::error($e);
       } else {
         self::newMessage($e);
         self::customErrorMsg();
       }
+
 
     }
 
@@ -113,6 +118,10 @@ class Logger
     */
     public static function errorHandler($number, $message, $file, $line)
     {
+      if(Config::SITE_ENVIRONMENT() == 'development') {
+        Error::showError(500,'('.$number.') '.$file.':'.$line. ' => '.$message);
+        die();
+      }
       $msg = "$message in $file on line $line";
       if(self::$logger != null){
         self::error($number . $msg);
@@ -126,6 +135,27 @@ class Logger
       return 0;
     }
 
+    public static function buildExceptionMessage(\Exception $exception) {
+      $message = $exception->getMessage();
+      $code = $exception->getCode();
+      $file = $exception->getFile();
+      $line = $exception->getLine();
+      $trace = $exception->getTraceAsString();
+      $date = date('M d, Y G:iA');
+
+      $logMessage = "<h3>Exception information:</h3>\n
+         <p><strong>Date:</strong> {$date}</p>\n
+         <p><strong>Message:</strong> {$message}</p>\n
+         <p><strong>Code:</strong> {$code}</p>\n
+         <p><strong>File:</strong> {$file}</p>\n
+         <p><strong>Line:</strong> {$line}</p>\n
+         <h3>Stack trace:</h3>\n
+         <pre>{$trace}</pre>\n
+         <hr />\n";
+
+      return $logMessage;
+    }
+
     /**
     * new exception
     * @param  Exception $exception
@@ -136,22 +166,7 @@ class Logger
     public static function newMessage(\Exception $exception)
     {
 
-        $message = $exception->getMessage();
-        $code = $exception->getCode();
-        $file = $exception->getFile();
-        $line = $exception->getLine();
-        $trace = $exception->getTraceAsString();
-        $date = date('M d, Y G:iA');
-
-        $logMessage = "<h3>Exception information:</h3>\n
-           <p><strong>Date:</strong> {$date}</p>\n
-           <p><strong>Message:</strong> {$message}</p>\n
-           <p><strong>Code:</strong> {$code}</p>\n
-           <p><strong>File:</strong> {$file}</p>\n
-           <p><strong>Line:</strong> {$line}</p>\n
-           <h3>Stack trace:</h3>\n
-           <pre>{$trace}</pre>\n
-           <hr />\n";
+        $logMessage = self::buildExceptionMessage($exception);
 
         if (is_file(self::$errorFile) === false) {
             file_put_contents(self::$errorFile, '');

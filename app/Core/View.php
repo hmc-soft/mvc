@@ -16,6 +16,12 @@ class View
      */
     private static $headers = array();
 
+    private static function init() {
+      if(!headers_sent()){
+        \Helpers\Hooks::run('headers');
+      }
+    }
+
     /**
      * include template file
      * @param  string  $path  path to file from views folder
@@ -24,12 +30,20 @@ class View
      */
     public static function render($path, $data = false, $error = false)
     {
+      self::init();
         if (!headers_sent()) {
             foreach (self::$headers as $header) {
                 header($header, true);
             }
         }
-        require "app/views/$path.php";
+		$file = "app/views/$path.php";
+		if(file_exists($file)) {
+			require $file;
+		} else {
+			//Logger::error();
+            Error::showError(500, 'File (' . $file . ') was not found.');
+            die();
+		}
     }
 
     /**
@@ -40,6 +54,7 @@ class View
      */
     public static function renderModule($path, $data = false, $error = false)
     {
+      self::init();
         if (!headers_sent()) {
             foreach (self::$headers as $header) {
                 header($header, true);
@@ -56,14 +71,21 @@ class View
      */
     public static function renderTemplate($path, $data = false, $custom = false)
     {
+      self::init();
         if (!headers_sent()) {
             foreach (self::$headers as $header) {
                 header($header, true);
             }
         }
-
+		$file = "app/templates/".\Core\Config::SITE_TEMPLATE()."/$path.php";
         if ($custom == false) {
-            require "app/templates/".\Core\Config::SITE_TEMPLATE()."/$path.php";
+            if(file_exists($file)){
+              require $file;
+            } else {
+				Logger::error('File (' . $file . ') was not found.');
+              Error::showError(500);
+              die();
+            }
         } else {
             require "app/templates/$custom/$path.php";
         }
@@ -73,7 +95,7 @@ class View
      * add HTTP header to headers array
      * @param  string  $header HTTP header text
      */
-    public function addHeader($header)
+    public static function addHeader($header)
     {
         self::$headers[] = $header;
     }
@@ -82,10 +104,10 @@ class View
     * Add an array with headers to the view.
     * @param array $headers
     */
-    public function addHeaders($headers = array())
+    public static function addHeaders($headers = array())
     {
         foreach ($headers as $header) {
-            $this->addHeader($header);
+            self::addHeader($header);
         }
     }
 }

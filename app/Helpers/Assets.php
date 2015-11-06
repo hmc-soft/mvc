@@ -50,7 +50,7 @@ class Assets
         static::resource($files, 'js');
     }
 
-    public static function combine_js($files,$outputdir)
+    public static function combine_js($files,$outputdir = 'static/generated/')
     {
       if(\Core\Config::SITE_ENVIRONMENT() == 'development') {
         Assets::js($files);
@@ -106,7 +106,7 @@ class Assets
         static::resource($files, 'css');
     }
 
-    public static function combine_css($files,$outputdir)
+    public static function combine_css($files,$outputdir = 'static/generated/')
     {
       if(\Core\Config::SITE_ENVIRONMENT() == 'development') {
         Assets::css($files);

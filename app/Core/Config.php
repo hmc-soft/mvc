@@ -16,6 +16,19 @@ use Helpers\Session;
 class Config
 {
     private static $options;
+	
+	private static function merge_defaults($defaults,$opts) {
+		$ret = array();
+		foreach ($defaults as $key => $value) {
+			$ret[$key] = $value;
+			if(isset($opts[$key])) {
+				foreach($opts[$key] as $opt_key => $opt_val) {
+					$ret[$key][$opt_key] = $opt_val;
+				}
+			}
+		}
+		return $ret;
+	}
 
     private static function get_defaults() {
       return array(
@@ -30,8 +43,8 @@ class Config
           'TIMEZONE' => 'America/Chicago'
         ),
         'DATABASE' => array(
-          'TYPE' => 'mysql',
-          'HOST' => 'localhost',
+          'TYPE' => '',
+          'HOST' => '',
           'NAME' => '',
           'USER' => '',
           'PASS' => '',
@@ -39,7 +52,7 @@ class Config
           'CONNECTION' => null
         ),
         'SESSION' => array(
-          'NAME' => '',
+          'NAME' => 'HMVC-DEFSESSION',
           'PREFIX' => 'hmc_',
           'ENCRYPT' => false,
           'ALGO' => MCRYPT_RIJNDAEL_128,
@@ -48,74 +61,115 @@ class Config
           'IV' => ''
         ),
         'LOG' => array(
-          'EXCEPTIONS' => 'Core\Logger::ExceptionHandler',
-          'ERRORS' => 'Core\Logger::ErrorHandler',
-          'DIR' => 'app/logs',
-          'EMAIL' => false,
-          'LEVEL' => \Psr\Log\LogLevel::ERROR
-        )
+          'EMAIL' => false
+        ),
+		'ROUTES' => array(
+			array('GET','','Controllers\\Welcome@index'),
+			array('GET','subpage','Controllers\\Welcome@subPage')
+		)
 
       );
     }
 
-    public static function init(array $opts = null)
+    public static function init($configFile)
     {
+        $opts = null;
+        $apcEnabled = (bool)ini_get('apc.enabled');
+        if($apcEnabled && apc_exists('hmcsoftmvc-config')) {
+          if(file_exists($configFile)) {
+            $lastModTime = filemtime($configFile);
+            $lastConfTime = 0;
+            if(apc_exists('hmcsoftmvc-config-updated')) {
+              $lastConfTime = apc_fetch('hmcsoftmvc-config-updated');
+            }
+            if($lastConfTime < $lastModTime) {
+              $opts = json_decode(file_get_contents($configFile),true);
+              apc_store('hmcsoftmvc-config',$opts);
+              apc_store('hmcsoftmvc-config-updated',$lastModTime);
+            } else {
+              $opts = apc_fetch('hmcsoftmvc-config');
+            }
+          }
+        } else {
+          if(is_readable($configFile)) {
+            $opts = json_decode(file_get_contents($configFile),true);
+          }
+        }
         $defaults = self::get_defaults();
-        if(is_array($opts)){
-          self::$options = array_merge($defaults,$opts);
+        if($opts !== null){
+          self::$options = (array) self::merge_defaults($defaults,(array)$opts);
         }
 
+        if(isset(self::$options['SITE'])) {
+          if(isset(self::$options['ENVIRONMENT'])) {
+            if(self::$options['SITE']['ENVIRONMENT'] == 'development') {
+              error_reporting(E_NONE);
 
-        switch (self::$options['SITE']['ENVIRONMENT']) {
-            case 'development':
-                error_reporting(E_ALL);
-                break;
-            default:
-                error_reporting(0);
+            } else {
+              error_reporting(E_NONE);
+            }
+          }
+          //set timezone
+          if(isset(self::$options['SITE']['TIMEZONE'])) {
+            date_default_timezone_set(self::$options['SITE']['TIMEZONE']);
+          }
         }
-
 
         //turn on output buffering
         ob_start();
 
         //turn on custom error handling
-        \Core\Logger::init(self::$options['LOG']);
-        set_exception_handler(self::$options['LOG']['EXCEPTIONS']);
-        set_error_handler(self::$options['LOG']['ERRORS']);
-
-        //set timezone
-        date_default_timezone_set(self::$options['SITE']['TIMEZONE']);
+        if(isset(self::$options['LOG'])) {
+          \Core\Logger::init(self::$options['LOG']);
+          if(isset(self::$options['LOG']['EXCEPTIONS'])){
+            set_exception_handler(self::$options['LOG']['EXCEPTIONS']);
+          } else {
+            set_exception_handler('Core\Logger::exceptionHandler');
+          }
+          if(isset(self::$options['LOG']['ERRORS'])){
+            set_error_handler(self::$options['LOG']['ERRORS']);
+          } else {
+            set_error_handler('Core\Logger::errorHandler');
+          }
+        }
 
         //start sessions
-        Session::init(self::$options['SESSION']);
+        if(isset(self::$options['SESSION'])){
+          Session::init(self::$options['SESSION']);
+        } else {
+          Session::init();
+        }
+
+        return self::$options;
     }
 
-    public static function __toString() {
+    public function __toString() {
       return json_encode(self::$options);
     }
 
     public static function __callstatic($opt,$params = null) {
       $oarr = explode('_',$opt);
+
       if(is_array($oarr)) {
         if(count($oarr) > 1) {
           if(is_array(self::$options[$oarr[0]])){
             if(isset(self::$options[$oarr[0]]) && isset(self::$options[$oarr[0]][$oarr[1]])){
               return self::$options[$oarr[0]][$oarr[1]];
             } else {
-              throw new InvalidArgumentException('No option set in: ' . $opt);
+              throw new \InvalidArgumentException('No option set in: ' . $opt);
             }
           } else {
-            throw new InvalidArgumentException('Invalid option requested: ' . $opt . ', ' . $oarr[0] . ' is not an array.');
+            throw new \InvalidArgumentException('Invalid option requested: ' . $opt . ', ' . $oarr[0] . ' is not an array.');
           }
         } else {
           if(isset(self::$options[$oarr[0]])){
             return self::$options[$oarr[0]];
           } else {
-            throw new InvalidArgumentException('No option set in: ' . $opt);
+            throw new \InvalidArgumentException('No option set in: ' . $opt);
           }
         }
       } else {
-        throw new InvalidArgumentException('Unknown option error: ' . $opt);
+        throw new \InvalidArgumentException('Unknown option error: ' . $opt);
       }
     }
 }

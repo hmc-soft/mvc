@@ -30,6 +30,7 @@ class Hooks
 
         //define hooks
         self::setHooks(array(
+            'headers',
             'meta',
             'css',
             'afterBody',
@@ -78,6 +79,7 @@ class Hooks
     //attach custom function to hook
     public static function addHook($where, $function)
     {
+      echo '<!-- |'. $where . '=>'.$function .' -->';
         if (!isset(self::$hooks[$where])) {
             die("There is no such place ($where) for hooks.");
         } else {
@@ -88,43 +90,45 @@ class Hooks
         }
     }
 
-    public function run($where, $args = '')
+    public static function run($where, $args = '')
     {
-        if (isset(self::$hooks[$where])) {
-            $theseHooks = explode('|', self::$hooks[$where]);
-            $result = $args;
+      echo '<!-- running ' . $where . ' -->';
+      if (isset(self::$hooks[$where])) {
+          $theseHooks = explode('|', self::$hooks[$where]);
+          $result = $args;
 
-            foreach ($theseHooks as $hook) {
-                if (preg_match("/@/i", $hook)) {
-                    //grab all parts based on a / separator
-                    $parts = explode('/', $hook);
+          foreach ($theseHooks as $hook) {
+            echo '<!-- ' . $hook . ' -->';
+              if (preg_match("/@/i", $hook)) {
+                  //grab all parts based on a / separator
+                  $parts = explode('\\', $hook);
 
-                    //collect the last index of the array
-                    $last = end($parts);
+                  //collect the last index of the array
+                  $last = end($parts);
 
-                    //grab the controller name and method call
-                    $segments = explode('@', $last);
+                  //grab the controller name and method call
+                  $segments = explode('@', $last);
 
-                    $classname = new $segments[0]();
-                    $result = call_user_func(array($classname, $segments[1]), $result);
+                  $classname = new $segments[0]();
+                  $result = call_user_func(array($classname, $segments[1]), $result);
 
-                } else {
-                    if (function_exists($hook)) {
-                        $result = call_user_func($hook, $result);
-                    }
-                }
-            }
+              } else {
+                  if (function_exists($hook)) {
+                      $result = call_user_func($hook, $result);
+                  }
+              }
+          }
 
-            return $result;
-        } else {
-            die("There is no such place ($where) for hooks.");
-        }
+          return $result;
+      } else {
+          throw new \InvalidArgumentException("There is no such place ($where) for hooks.");
+      }
     }
 
-    public function collectHook($where, $args = null)
+    public static function collectHook($where, $args = null)
     {
         ob_start();
-            echo $this->run($where, $args);
+            echo self::run($where, $args);
         return ob_get_clean();
     }
 }

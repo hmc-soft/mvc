@@ -55,7 +55,7 @@ class Ftp
      * create a directory on th remote FTP server
      * @param  string $dirToCreate name of the directory to create
      */
-    public function makeDirectory($dirToCreate)
+    public function mkdir($dirToCreate)
     {
         if (!file_exists($this->basePath.$dirToCreate)) {
             ftp_mkdir($this->conn, $this->basePath.$dirToCreate);
@@ -66,7 +66,7 @@ class Ftp
      * delete directory from FTP server
      * @param  string $dir foldr to delete
      */
-    public function deleteDirectory($dir)
+    public function rmdir($dir)
     {
         ftp_rmdir($this->conn, $this->basePath.$dir);
     }
@@ -77,11 +77,12 @@ class Ftp
      * @param  integer $permission permission value
      * @return string              success message
      */
-    public function folderPermission($folderChmod, $permission)
+    public function chmod($folderChmod, $permission)
     {
         if (ftp_chmod($this->conn, $permission, $folderChmod) !== false) {
-            return "<p>$folderChmod chmoded successfully to ".$permission."</p>\n";
+            return true;
         }
+        return false;
     }
 
     /**
@@ -92,10 +93,10 @@ class Ftp
      */
     public function uploadFile($remoteFile, $localFile)
     {
-        if (ftp_put($this->conn, $this->basePath.$remoteFile, $localFile, FTP_ASCII)) {
-            return "<p>successfully uploaded $localFile to $remoteFile</p>\n";
+        if (ftp_put($this->conn, $this->basePath.$remoteFile, $localFile, FTP_BINARY)) {
+            return true;
         } else {
-            return "<p>There was a problem while uploading $remoteFile</p>\n";
+            return false;
         }
     }
 
@@ -103,7 +104,7 @@ class Ftp
      * delete remove file
      * @param  string $file path and filename
      */
-    public function deleteFile($file)
+    public function rm($file)
     {
         ftp_delete($this->conn, $this->basePath.$file);
     }

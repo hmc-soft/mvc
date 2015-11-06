@@ -112,12 +112,28 @@ class Document
      * @param string $path
      * @return string
      */
-    public static function getFolderSize($path)
+    public static function getFolderSize($path_)
     {
-        $io = popen('/usr/bin/du -sb '.$path, 'r');
-        $size = intval(fgets($io, 80));
-        pclose($io);
-        return $size;
+        $bytestotal = 0;
+        $path = realpath($path_);
+        if($path !== false) {
+          foreach(new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS)
+          ) as $object) {
+            try {
+              $bytestotal += $object->getSize();
+            }
+            catch(\Exception $e) {
+              Logger::warn(
+                "There was an error access the path: " .
+                $object->getPathname() . '\n' .
+                Logger::buildExceptionMessage($e)
+              );
+            }
+
+          }
+        }
+        return $bytestotal;
     }
 
     /**
@@ -135,7 +151,7 @@ class Document
      * @param  string  $file filename and extension
      * @return file name missing extension
      */
-    public static function removeExtension($file)
+    public static function getFilename($file)
     {
         if (strpos($file, '.')) {
             $file = pathinfo($file, PATHINFO_FILENAME);

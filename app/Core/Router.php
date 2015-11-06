@@ -14,7 +14,7 @@ class Router
 {
 
     // Fallback for auto dispatching feature.
-    public static $fallback = true;
+    public static $fallback = false;
 
     // If true - do not process other routes when match is found
     public static $halts = true;
@@ -47,6 +47,24 @@ class Router
         array_push(self::$routes, $uri);
         array_push(self::$methods, strtoupper($method));
         array_push(self::$callbacks, $callback);
+    }
+
+    public static function init($config) {
+      $hooks = \Helpers\Hooks::get();
+
+      if(isset($config['ROUTES'])){ //Routes defined in the config file.
+        Router::parseConfig($config['ROUTES']);
+      }
+
+      if(isset($config['HOOKS']) && isset($config['HOOKS']['ROUTES'])) {
+        //These call a function on the controller to setup the routes.
+        //This is the preferred method for projects with a large number of routes.
+        foreach($config['HOOKS']['ROUTES'] as $route) {
+          \Helpers\Hooks::addHook('routes',$route);
+        }
+      }
+
+      $hooks->run('routes');
     }
 
     public static function parseConfig(array $routes) {
@@ -112,17 +130,19 @@ class Router
      */
     public static function autoDispatch()
     {
-        $uri = parse_url($_SERVER['QUERY_STRING'], PHP_URL_PATH);
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $uri = trim($uri, ' /');
         $uri = ($amp = strpos($uri, '&')) !== false ? substr($uri, 0, $amp) : $uri;
 
         $parts = explode('/', $uri);
+        if($parts[0] == 'index.php')
+          unset($parts[0]);
 
         $controller = array_shift($parts);
         //$controller = $controller ? $controller : DEFAULT_CONTROLLER;
 
         $method = array_shift($parts);
-        //$method = $method ? $method : DEFAULT_METHOD;
+        $method = $method ? $method : 'index';
 
         $args = !empty($parts) ? $parts : array();
 
@@ -253,14 +273,7 @@ class Router
         if (!$found_route) {
             if (!self::$errorCallback) {
                 self::$errorCallback = function () {
-                    header("{$_SERVER['SERVER_PROTOCOL']} 404 Not Found");
-
-                    $data['title'] = '404';
-                    $data['error'] = "Oops! Page not found..";
-
-                    View::renderTemplate('header', $data);
-                    View::render('Error/404', $data);
-                    View::renderTemplate('footer', $data);
+                    Error::showError(404);
                 };
             }
 
