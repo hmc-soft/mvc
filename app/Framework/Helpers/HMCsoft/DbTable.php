@@ -285,7 +285,7 @@ class DbTable {
           break;
 
         default:
-          throw new Exception('Method (fromDB) not implemented for this driver: ' . $dbtype);
+          throw new \Exception('Method (fromDB) not implemented for this driver: ' . $dbtype);
       }
       return $ret;
     }

@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "tedivm/jshrink": "~1.0",
-        "katzgrau/klogger":"dev-master",
+        "katzgrau/klogger":"~1.0",
         "php": ">=5.4.0"
     },
     "suggest": {
@@ -19,7 +19,11 @@
     ],
     "autoload":{
         "psr-4":{
-			"":["app/Framework/","app/"]
+			"Core\\":"app/Framework/Core/",
+			"Helpers\\":"app/Framework/Helpers/",
+			"Controllers\\":"app/Controlers/",
+			"Views\\":"app/Views/",
+			"Models\\":"app/Models/"
 		},
         "files":["app/Framework/Modules/password.php"]
     },
