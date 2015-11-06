@@ -1,6 +1,10 @@
 ## About
 A Simple MVC Framework focused on elegant fast code.
 
+## Note
+This project is currently under pretty heavy development and should 
+maybe not be considered ready for production. 
+
 ## Credits
 Originally based on _Simple MVC Framework_ by David Carr
 
