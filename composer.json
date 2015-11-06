@@ -18,8 +18,10 @@
         }
     ],
     "autoload":{
-        "psr-4":{"":"app/"},
-        "files":["app/Modules/password.php"]
+        "psr-4":{
+			"":["app/Framework/","app/"]
+		},
+        "files":["app/Framework/Modules/password.php"]
     },
     "minimum-stability": "dev"
 }
