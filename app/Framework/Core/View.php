@@ -36,7 +36,7 @@ class View
                 header($header, true);
             }
         }
-		$file = "app/views/$path.php";
+		$file = "app/Views/$path.php";
 		if(file_exists($file)) {
 			require $file;
 		} else {
@@ -60,7 +60,7 @@ class View
                 header($header, true);
             }
         }
-        require "app/Modules/$path.php";
+        require "app/Framework/Modules/$path.php";
     }
 
     /**
@@ -77,7 +77,7 @@ class View
                 header($header, true);
             }
         }
-		$file = "app/templates/".\Core\Config::SITE_TEMPLATE()."/$path.php";
+		$file = "app/Templates/".\Core\Config::SITE_TEMPLATE()."/$path.php";
         if ($custom == false) {
             if(file_exists($file)){
               require $file;
@@ -87,7 +87,7 @@ class View
               die();
             }
         } else {
-            require "app/templates/$custom/$path.php";
+            require "app/Templates/$custom/$path.php";
         }
     }
 

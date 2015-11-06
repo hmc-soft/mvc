@@ -18,8 +18,8 @@ class Language
      * @var array
      */
     private static $array;
-	private static $code;
-	private static $lastLoaded = null;
+    private static $code;
+    private static $lastLoaded = null;
 
     /**
      * Load language function
@@ -35,7 +35,7 @@ class Language
 			self::$code = $icode;
 		}
         // lang file
-        $file = "app/language/".self::$code."/$name.php";
+        $file = "app/Language/".self::$code."/$name.php";
 
         // check if is readable
         if (is_readable($file)) {

@@ -15,13 +15,13 @@ class Logger
 {
 
     /**
-    * determins if error should be displayed
+    * determines if error should be displayed
     * @var boolean
     */
     private static $printError = false;
 
     /**
-    * determins if error should be emailed to SITEEMAIL defined in app/Core/Config.php
+    * determines if error should be emailed to SITEEMAIL defined in the config
     * @var boolean
     */
     private static $emailError = false;
@@ -38,7 +38,7 @@ class Logger
     */
     private static $errorFile = '.error.log';
 
-    private static $logDir = 'app/logs';
+    private static $logDir = 'app/Logs';
 
     private static $logger = null;
 
