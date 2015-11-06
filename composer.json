@@ -21,7 +21,7 @@
         "psr-4":{
 			"Core\\":"app/Framework/Core/",
 			"Helpers\\":"app/Framework/Helpers/",
-			"Controllers\\":"app/Controlers/",
+			"Controllers\\":"app/Controllers/",
 			"Views\\":"app/Views/",
 			"Models\\":"app/Models/"
 		},
