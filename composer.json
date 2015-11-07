@@ -19,11 +19,11 @@
     ],
     "autoload":{
         "psr-4":{
-			"HMC\\":"app/Framework/",
-			"Controllers\\":"app/Controllers/",
-			"Views\\":"app/Views/",
-			"Models\\":"app/Models/"
-		},
+      			"HMC\\":"app/Framework/",
+      			"Controllers\\":"app/Controllers/",
+      			"Views\\":"app/Views/",
+      			"Models\\":"app/Models/"
+    		},
         "files":["app/Framework/Modules/password.php"]
     },
     "minimum-stability": "dev"
