@@ -19,18 +19,22 @@ class Document
      */
     public static function getFileType($extension)
     {
-        $images = array('jpg', 'gif', 'png', 'bmp');
-        $docs   = array('txt', 'rtf', 'doc', 'docx', 'pdf');
-        $apps   = array('zip', 'rar', 'exe', 'html');
-        $video  = array('mpg', 'wmv', 'avi', 'mp4');
-        $audio  = array('wav', 'mp3');
-        $db     = array('sql', 'csv', 'xls','xlsx');
+        $images = array('jpg', 'gif', 'png', 'bmp','tiff','tif','jpeg','wmf','svg','webp');
+        $docs   = array('txt', 'rtf', 'doc', 'docx', 'pdf', 'odt', 'html', 'xml', 'epub', 'mobi');
+        $archives = array('zip','rar','7z','gz','lzma','rpm','deb','tgz','bzip');
+        $apps   = array('exe', 'bat', 'sh','bin','run');
+        $video  = array('mpg', 'wmv', 'avi', 'mp4', 'mkv','webm');
+        $audio  = array('wav', 'mp3', 'ogg', 'ape', 'flac', 'aac');
+        $db     = array('sql', 'csv', 'xls','xlsx', 'ods', 'db');
 
         if (in_array($extension, $images)) {
             return "Image";
         }
         if (in_array($extension, $docs)) {
             return "Document";
+        }
+        if (in_array($extension, $archives)) {
+          return "Archive";
         }
         if (in_array($extension, $apps)) {
             return "Application";
