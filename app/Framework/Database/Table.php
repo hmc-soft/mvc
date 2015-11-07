@@ -23,6 +23,7 @@ class Table {
     if($name == null || $name == '') {
       throw new \InvalidArgumentException('You must provide a name for the table.');
     }
+    $this->tblName = $name;
     if($fields) {
       $this->tblFields = $fields;
     }
@@ -43,6 +44,7 @@ class Table {
       if($field['name'] == $fname) {
         return array(
           'type' => $field['type'],
+          'length' => $field['length'],
           'nullable' => $field['nullable'],
           'default' => $field['default'],
           'options' => $field['options'],
@@ -66,9 +68,10 @@ class Table {
       if($field['name'] == $fname) {
         $foundIt = true;
         $field['type'] = $value['type'];
-        $field['nullable'] = $value['nullable'];
-        $field['default'] = $value['default'];
-        $field['options'] = $value['options'];
+        $field['length'] = $value['length'] || null;
+        $field['nullable'] = $value['nullable'] || NOT_NULL;
+        $field['default'] = $value['default'] || null;
+        $field['options'] = $value['options'] || null;
         if(isset($value['primary'])) {
           if($value['primary']) {
             $this->pk = $fname;
@@ -80,9 +83,10 @@ class Table {
       $this->tblFields[] = array(
         'name' => $fname,
         'type' => $value['type'],
-        'nullable' => $value['nullable'],
-        'default' => $value['default'],
-        'options' => $value['options']
+        'length' => $value['length'] || null,
+        'nullable' => $value['nullable'] || NOT_NULL,
+        'default' => $value['default'] || null,
+        'options' => $value['options'] || null
       );
       if(isset($value['primary'])) {
         if($value['primary']) {
@@ -109,6 +113,7 @@ class Table {
   * Add a field to the table.
   * @param $fName - the name of the field.
   * @param $fType - the type of the field.
+  * @param $fLen - the (optional) length of the type, i.e. varchar(255)
   * @param $fNullable (optional) - can the field be null, defaults to DbTable::NOT_NULL.
   * @param $fDefault (optional) - the default value of the field.
   * @param $isPrimary (optional) - is this the table's primary key, defaults to false
@@ -116,12 +121,13 @@ class Table {
   *
   * @return $this for chaining.
   */
-  public function addField($fName, $fType, $fNullable = NOT_NULL, $fDefault = null, $isPrimary = false, $options = null) {
+  public function addField($fName, $fType, $fLen = null, $fNullable = Table::NOT_NULL, $fDefault = null, $isPrimary = false, $options = null) {
     if($this->tblFields == null) $tblFields = array();
 
     $field = array(
       'name' => $fName,
       'type' => $fType,
+      'length' => $fLen,
       'nullable' => $fNullable,
       'default' => $fDefault,
       'options' => $options
@@ -144,12 +150,18 @@ class Table {
   * @return The proper SQL string to create the table or null if in error.
   */
   public function compile() {
-    $sql = "{$this->name} (";
+    $sql = "{$this->tblName} (";
 
     if(!$this->tblFields) return null;
 
     foreach ($this->tblFields as $field) {
-      $sql .= "`{$field['name']}` {$field['type']} {$field['nullable']} ";
+      $realType = $field['type'];
+      if($field['length'] !== null) {
+        if(is_int($field['length'])) {
+          $realType .= '('.$field['length'].')';
+        }
+      }
+      $sql .= "`{$field['name']}` {$realType} {$field['nullable']} ";
       if(isset($field['default'])) {
         if($field['default'] !== null) {
           $sql .= "DEFAULT {$field['default']} ";
@@ -179,7 +191,7 @@ class Table {
     }
 
     if ($this->pk !== null) {
-        $sql .= "CONSTRAINT pk_{$this->pk} PRIMARY KEY (`{$this->pk}`)";
+        $sql .= "PRIMARY KEY (`{$this->pk}`)";
     }
 
     // Removing additional commas
@@ -213,6 +225,7 @@ class Table {
       }
     }
     catch(\Exception $e) {
+      \HMC\Logger::error($sql);
       \HMC\Logger::error(\HMC\Logger::buildExceptionMessage($e));
       return false;
     }
@@ -225,7 +238,7 @@ class Table {
   public function exists() {
     $retVal = false;
     if($this->db === null) return false;
-    $dbtype = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+    $dbtype = $this->db->getAttribute(\PDO::ATTR_DRIVER_NAME);
     switch($dbtype) {
       case 'sqlite':
         $sql  = "SELECT name FROM sqlite_master ";
@@ -266,20 +279,31 @@ class Table {
     if($db === null) return null;
     $ret = new Table($name,null,$db);
     if($ret->exists()) {
-      $dbtype = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
+      $dbtype = $db->getAttribute(\PDO::ATTR_DRIVER_NAME);
       switch($dbtype) {
         case 'mysql':
           $sql = "SHOW COLUMNS FROM {$name}";
           $resultSet = $db->query($sql);
-          $results = $resultSet->fetchAll(PDO::FETCH_ASSOC);
+          $results = $resultSet->fetchAll(\PDO::FETCH_ASSOC);
           foreach($results as $field) {
+            $matches = array();
+            $regresult = preg_match("/(\w+)\((\d+)\)/",$field['Type'],$matches);
+            $realType = '';
+            if($regresult == 0 || $regresult == false) {
+              $realType = $field['Type'];
+              $realLen = null;
+            } else {
+              $realType = $matches[1];
+              $realLen = (int)$matches[2];
+            }
             $ret->addField(
               $field['Field'],
-              $field['Type'],
-              ($field['Null'] == 'YES' ? NULLABLE : NOT_NULL),
+              $realType,
+              $realLen,
+              ($field['Null'] == 'YES' ? Table::NULLABLE : Table::NOT_NULL),
               $field['Default'],
               ($field['Key'] == 'PRI' ? true : false),
-              ($field['Key'] == 'UNI' ? 'UNIQUE '.$field['Extra'] : $field['Extra'])
+              ($field['Key'] == 'UNI' ? 'UNIQUE '.strtoupper($field['Extra']) : ($field['Extra'] == '' ? null : strtoupper($field['Extra'])))
             );
           }
           break;
@@ -290,5 +314,44 @@ class Table {
       return $ret;
     }
     return null;
+  }
+
+  /**
+  * Report differences between the passed table and this one.
+  */
+  public function diff(Table $rhs) {
+    $ourFields = $this->tblFields;
+    $lenOF = count($ourFields);
+    $theirFields = $rhs->tblFields;
+    $lenTF = count($theirFields);
+    $diff = array();
+    foreach($theirFields as $field) {
+      $name = $field['name'];
+
+      $of = null;
+      foreach($ourFields as $ofield) {
+        if($ofield['name'] == $name)
+          $of = $ofield;
+      }
+      if($of == null) {
+        //field doesn't exist in our table.
+        $diff[] = $field;
+      } else {
+        $needed = false;
+        $outfield = array( 'name' => $name );
+
+        foreach($field as $key => $value) {
+          if($of[$key] !== $value) {
+            $needed = true;
+            $outfield[$key] = array('ours' => $of[$key], 'theirs' => $value);
+          }
+        }
+
+        if($needed) {
+          $diff[] = $outfield;
+        }
+      }
+    }
+    return $diff;
   }
 }
