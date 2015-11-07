@@ -19,8 +19,7 @@
     ],
     "autoload":{
         "psr-4":{
-			"Core\\":"app/Framework/Core/",
-			"Helpers\\":"app/Framework/Helpers/",
+			"HMC\\":"app/Framework/",
 			"Controllers\\":"app/Controllers/",
 			"Views\\":"app/Views/",
 			"Models\\":"app/Models/"

@@ -1,8 +1,10 @@
-  <?php
-  \Helpers\Hooks::run('footer');
-  \Helpers\Hooks::run('afterBody');
-  \Helpers\Hooks::run('js');
+<?php
+    
+    use HMC\Hooks;
+    Hooks::run('footer');
+    Hooks::run('afterBody');
+    Hooks::run('js');
   //do js here
-  ?>
-  </body>
+
+  ?></body>
 </html>

@@ -1,11 +1,16 @@
-<!DOCTYPE html>
+<?php
+
+use HMC\Config;
+use HMC\Hooks;
+
+?><!DOCTYPE html>
 <html>
   <head>
-    <title><?php echo $data['title']; ?> | <?php echo Core\Config::SITE_TITLE(); ?></title>
+    <title><?php echo $data['title']; ?> | <?php echo Config::SITE_TITLE(); ?></title>
     <?php
-      \Helpers\Hooks::run('meta');
-      \Helpers\Hooks::run('css');
-      //use \Helpers\Assets::css or combine_css to inject stylesheets
+      Hooks::run('meta');
+      Hooks::run('css');
+      //use Assets::css or combine_css to inject stylesheets
     ?>
   </head>
   <body>

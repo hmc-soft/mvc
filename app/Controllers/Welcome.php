@@ -1,9 +1,9 @@
 <?php
 namespace Controllers;
 
-use Core\View;
-use Core\Controller;
-use Core\Language;
+use HMC\View;
+use HMC\Controller;
+use HMC\Language;
 
 /*
  * Welcome controller

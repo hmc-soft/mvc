@@ -1,6 +1,7 @@
 <?php
 
-use Core\Language;
+use HMC\Config;
+use HMC\Language;
 
 ?>
 
@@ -10,6 +11,6 @@ use Core\Language;
 
 <p><?php echo $data['welcome_message'] ?></p>
 
-<a class="btn btn-md btn-success" href="<?php echo Core\Config::SITE_URL();?>/subpage">
+<a class="btn btn-md btn-success" href="<?php echo Config::SITE_URL();?>/subpage">
 	<?php echo Language::tr('open_subpage'); ?>
 </a>

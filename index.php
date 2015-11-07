@@ -8,15 +8,19 @@ if (file_exists('vendor/autoload.php')) {
     exit;
 }
 
+use HMC\Config;
+use HMC\Hooks;
+use HMC\Router;
+use HMC\View;
+
 //Routes are defined in the config file.
 $configFile = '.app_config.json';
 
 //initiate config
-$config = \Core\Config::init($configFile);
-\Helpers\Hooks::get();
-\Helpers\Hooks::addHook('headers','addNotice');
-//create alias for Router
-use \Core\Router;
+$config = Config::init($configFile);
+Hooks::get();
+Hooks::addHook('headers','addNotice');
+
 
 //Initialize Router
 Router::init($config);
@@ -31,5 +35,5 @@ Router::$fallback = true;
 Router::dispatch();
 
 function addNotice() {
-  \Core\View::addHeader('X-Uses: HMC-soft MVC');
+  View::addHeader('X-Uses: HMC-soft MVC');
 }
