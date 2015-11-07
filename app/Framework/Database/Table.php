@@ -110,6 +110,17 @@ class Table {
   }
 
   /**
+  * Retrieve an array of each field name.
+  */
+  public function fields() {
+    $out = array();
+    foreach($this->tblFields as $field) {
+      $out[] = $field['name'];
+    }
+    return $out;
+  }
+
+  /**
   * Add a field to the table.
   * @param $fName - the name of the field.
   * @param $fType - the type of the field.
