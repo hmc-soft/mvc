@@ -3,6 +3,7 @@ namespace HMC;
 
 use HMC\Controller;
 use HMC\View;
+use HMC\Language;
 
 /*
  * error class - calls a 404 page
@@ -31,10 +32,11 @@ class Error extends Controller
     }
 
     public static function error404() {
+      Language::load('Errors');
       View::addHeader("HTTP/1.0 404 Not Found");
 
-      $data['title'] = 'Page Not Found';
-      $data['error'] = 'Page Not Found';
+      $data['title'] = Language::tr('404_title');
+      $data['error'] = Language::tr('404_title');
 
       View::renderTemplate('header', $data);
       View::render('error/404', $data);
@@ -43,8 +45,10 @@ class Error extends Controller
 
     public static function showError($errNum, $info = null) {
 
+      Language::load('Errors');
+
       ob_get_clean();
-      $defError = "An internal server error has occured.";
+      $defError = Language::tr('500_default_error');
       switch($errNum) {
         case 404:
           Error::error404();
@@ -57,8 +61,8 @@ class Error extends Controller
       }
         if($info != null)
             Logger::error('['.$errNum.'] ' . $info);
-        
-      $data['title'] = "Internal Server Error";
+
+      $data['title'] = Language::tr('500_title');
       $data['error'] = $info != null ? (Config::SITE_ENVIRONMENT() == 'development' ? $defError . '<br/>'. $info : $defError) : $defError;
 
       View::addHeader("HTTP/1.0 500 Internal Server Error");

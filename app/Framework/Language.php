@@ -42,10 +42,10 @@ class Language
             // require file
             if(!isset(self::$array[$name]))
                 self::$array[$name] = array();
-            
+
             if(empty(self::$array[$name][self::$code]))
                 self::$array[$name][self::$code] = include($file);
-            
+
             self::$lastLoaded = $name;
             return true;
         } else {
@@ -84,12 +84,26 @@ class Language
             $name = self::$lastLoaded;
 
         self::load($name);
-        
+
         if (!empty(self::$array[$name][self::$code] && isset(self::$array[$name][self::$code][$value]))) {
-            return self::$array[$name][self::$code][$value];
+            return self::expand_macros(self::$array[$name][self::$code][$value]);
         } else {
-            return $def ? $def : $value;
+            return self::expand_macros($def ? $def : $value);
         }
-        
+
+    }
+
+    private static function expand_macros($value) {
+      $out = $value;
+      $matches = array();
+      preg_match_all("/(\{\w+_\w+\})/",$value,$matches);
+      if(count($matches) > 0) {
+        foreach($matches[0] as $match) {
+          $rm = rtrim($match,'}');
+          $rm = ltrim($rm,'{');
+          $out = str_replace($match,Config::$rm(),$out);
+        }
+      }
+      return $out;
     }
 }

@@ -1,6 +1,7 @@
 <style>
 	body {
 		background-color: #ccc;
+		font-family: "Helvetica","Tahoma",sans-serif;
 	}
 	#page404 {
 		background-color: #fff;
@@ -18,7 +19,7 @@
 </style>
 
 <div id="page404">
-	<h1>That page could not be found.</h1>
+	<h1><?php echo Language::tr('404_headline'); ?></h1>
 
 	<svg
 	   xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -136,13 +137,13 @@
 	</svg>
 
 	<ul>
-		<li>Please check the address and try again.</li>
-	
-	<?php if(Core\Config::SITE_EMAIL() !== ''): ?>
-		<li>If you believe you have reached this page in error you can <a href="mailto:<?php echo Core\Config::SITE_EMAIL(); ?>">email the site administrator.</a></li>
+		<li><?php echo Language::tr('404_help_check_address'); ?></li>
+
+	<?php if(\HMC\Config::SITE_EMAIL() !== ''): ?>
+		<li><?php echo Language::tr('404_help_email_admin'); ?></li>
 	<?php endif; ?>
-	
-		<li>You can also <a href="<?php echo Core\Config::SITE_URL(); ?>">return to the site's homepage.</a></li>
-	
+
+		<li><?php echo Language::tr('404_help_goto_home'); ?></li>
+
 	</ul>
 </div>
