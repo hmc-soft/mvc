@@ -280,6 +280,7 @@ class Router
 
         // run the error callback if the route was not found
         if (!$found_route) {
+          //first check if we have a satisfiable static route.
           if(count(self::$static_routes) > 0) {
             $test_sr = str_replace(Config::SITE_PATH().'/','',$uri);
             foreach(self::$static_routes as $sr) {
@@ -296,6 +297,8 @@ class Router
                 }
                 die;
               } else {
+                //for security you cannot access php files directly so
+                //if there's no extension we test for a php file with that name.
                 if(file_exists($sr.$test_sr.'.php')) {
                   require($sr.$test_sr.'.php');
                   die;
