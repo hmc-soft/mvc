@@ -69,7 +69,7 @@ abstract class Model
     */
     public function get($filter) {
       $this->values = $this->db->select(
-        "SELECT TOP 1 " . join(",",$this->fields) . " FROM {$this->name} WHERE $filter;"
+        "SELECT " . join(",",$this->fields) . " FROM {$this->name} WHERE $filter;"
       );
       return $this->values == null;
     }

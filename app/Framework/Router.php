@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace HMC;
 
 use HMC\View;
@@ -22,6 +22,7 @@ class Router
     public static $halts = true;
 
     // Set routes, methods and etc.
+    public static $static_routes = array();
     public static $routes = array();
     public static $methods = array();
     public static $callbacks = array();
@@ -53,6 +54,12 @@ class Router
 
     public static function init($config) {
       $hooks = Hooks::get();
+
+      if(isset($config['STATIC'])) {
+        foreach($config['STATIC'] as $stat_r) {
+          self::$static_routes[] = $stat_r;
+        }
+      }
 
       if(isset($config['ROUTES'])){ //Routes defined in the config file.
         Router::parseConfig($config['ROUTES']);
@@ -273,24 +280,48 @@ class Router
 
         // run the error callback if the route was not found
         if (!$found_route) {
-            if (!self::$errorCallback) {
-                self::$errorCallback = function () {
-                    Error::showError(404);
-                };
-            }
+          if(count(self::$static_routes) > 0) {
+            $test_sr = str_replace(Config::SITE_PATH().'/','',$uri);
+            foreach(self::$static_routes as $sr) {
+              if(file_exists($sr . $test_sr)) {
+                $ext = \HMC\Document\Document::getExtension($test_sr);
+                switch($ext) {
+                  case 'html':
+                  case 'htm':
+                    require($sr . $test_sr);
+                    break;
 
-            if (!is_object(self::$errorCallback)) {
-                //call object controller and method
-                self::invokeObject(self::$errorCallback, null, 'No routes found.');
-                if (self::$halts) {
-                    return;
+                  default:
+                    header("Location: {$sr}{$test_sr}");
                 }
-            } else {
-                call_user_func(self::$errorCallback);
-                if (self::$halts) {
-                    return;
+                die;
+              } else {
+                if(file_exists($sr.$test_sr.'.php')) {
+                  require($sr.$test_sr.'.php');
+                  die;
                 }
+              }
             }
+          }
+
+          if (!self::$errorCallback) {
+              self::$errorCallback = function () {
+                  Error::showError(404);
+              };
+          }
+
+          if (!is_object(self::$errorCallback)) {
+              //call object controller and method
+              self::invokeObject(self::$errorCallback, null, 'No routes found.');
+              if (self::$halts) {
+                  return;
+              }
+          } else {
+              call_user_func(self::$errorCallback);
+              if (self::$halts) {
+                  return;
+              }
+          }
         }
     }
 }

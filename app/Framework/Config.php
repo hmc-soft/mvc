@@ -16,7 +16,7 @@ use HMC\Session;
 class Config
 {
     private static $options;
-	
+
 	private static function merge_defaults($defaults,$opts) {
 		$ret = array();
 		foreach ($defaults as $key => $value) {
@@ -63,11 +63,13 @@ class Config
         'LOG' => array(
           'EMAIL' => false
         ),
-		'ROUTES' => array(
-			array('GET','','Controllers\\Welcome@index'),
-			array('GET','subpage','Controllers\\Welcome@subPage')
-		)
-
+        'STATIC' => array(
+          'static/'
+        ),
+    		'ROUTES' => array(
+    			array('GET','','Controllers\\Welcome@index'),
+    			array('GET','subpage','Controllers\\Welcome@subPage')
+    		)
       );
     }
 
