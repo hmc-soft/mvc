@@ -9,4 +9,5 @@ return array(
 
   '500_default_error' => 'An internal server error has occured and has been reported to the site administrator.',
   '500_title' => 'Internal Server Error',
+  '500_after_error' => 'You can try to <a href="javascript:history.go(-1);">go back</a> to the previous page or you can <a href="{SITE_URL}">return to the site&apos;s homepage.</a>',
 );

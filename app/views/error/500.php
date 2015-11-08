@@ -15,11 +15,19 @@
 	}
   pre {
     font-family: "Andale Mono","Consolas",monospace;
+    text-align: left;
+    margin: 0 10% 0 10%;
+    background-color: #0a0a0a;
+    color: #004400;
+    padding: 10px;
+    border-radius: 5px;
   }
 </style>
 <div id="page500">
   <h1><?php echo $data['title']; ?></h1>
-  <pre>
+  <div id="error">
     <?php echo $data['error']; ?>
-  </pre>
+  </div>
+  <?php echo \HMC\Language::tr('500_after_error'); ?>
+  <br/>&nbsp;<br/>
 </div>
