@@ -30,7 +30,7 @@ class Language
     {
 
         if($icode == null) {
-          self::$code = (\HMC\Config::SITE_LANGUAGE() !== '' ? \HMC\Config::SITE_LANGUAGE() : 'en');
+          self::$code = \HMC\Config::SITE_LANGUAGE();//(\HMC\Config::SITE_LANGUAGE() !== '' ? \HMC\Config::SITE_LANGUAGE() : 'en');
         } else {
             self::$code = $icode;
         }

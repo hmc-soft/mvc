@@ -5,9 +5,9 @@ use HMC\View;
 use HMC\Hooks;
 
 /*
- * Router - routing urls to closurs and controllers - modified from https://github.HMC/NoahBuscher/Macaw
+ * Router - routing urls to closurs and controllers - modified from https://github.com/NoahBuscher/Macaw
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 2.2
  * @date Auguest 16th, 2014
  * @date updated May 18 2015

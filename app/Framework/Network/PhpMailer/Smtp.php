@@ -5,9 +5,9 @@ namespace HMC\Network\PhpMailer;
  * PHPMailer RFC821 SMTP email transport class.
  * PHP Version 5
  * @package PHPMailer
- * @link https://github.HMC/PHPMailer/PHPMailer/ The PHPMailer GitHub project
+ * @link https://github.com/PHPMailer/PHPMailer/ The PHPMailer GitHub project
  * @author Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
- * @author Jim Jagielski (jimjag) <jimjag@gmail.HMC>
+ * @author Jim Jagielski (jimjag) <jimjag@gmail.com>
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  * @copyright 2014 Marcus Bointon
@@ -23,7 +23,7 @@ namespace HMC\Network\PhpMailer;
  * PHPMailer RFC821 SMTP email transport class.
  * Implements RFC 821 SMTP commands and provides some utility methods for sending mail to an SMTP server.
  * @package PHPMailer
- * @author Chris Ryan <unknown@example.HMC>
+ * @author Chris Ryan <unknown@example.com>
  * @author Marcus Bointon <phpmailer@synchromedia.co.uk>
  */
 class SMTP

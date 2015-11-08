@@ -6,7 +6,7 @@ use PDO;
 /*
  * database Helper - extending PDO to use custom methods
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 2.1
  * @date June 27, 2014
  * @date May 18 2015

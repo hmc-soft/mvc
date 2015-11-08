@@ -4,7 +4,7 @@ namespace HMC\Misc;
 /*
  * Date Helper - collection of methods for working with dates
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 1.0
  * @date May 18 2015
  */

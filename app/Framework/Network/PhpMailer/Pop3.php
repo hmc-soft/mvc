@@ -5,9 +5,9 @@ namespace HMC\Network\PhpMailer;
  * PHPMailer POP-Before-SMTP Authentication Class.
  * PHP Version 5
  * @package PHPMailer
- * @link https://github.HMC/PHPMailer/PHPMailer/
+ * @link https://github.com/PHPMailer/PHPMailer/
  * @author Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
- * @author Jim Jagielski (jimjag) <jimjag@gmail.HMC>
+ * @author Jim Jagielski (jimjag) <jimjag@gmail.com>
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  * @copyright 2012 - 2014 Marcus Bointon
@@ -26,7 +26,7 @@ namespace HMC\Network\PhpMailer;
  * @package PHPMailer
  * @author Richard Davey (original author) <rich@corephp.co.uk>
  * @author Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
- * @author Jim Jagielski (jimjag) <jimjag@gmail.HMC>
+ * @author Jim Jagielski (jimjag) <jimjag@gmail.com>
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  */
 class POP3

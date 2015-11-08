@@ -4,7 +4,7 @@ namespace HMC\Network;
 /*
  * FTP Class - interact with remote FTP Server
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 1.0
  * @date June 27, 2014
  * @date May 18 2015

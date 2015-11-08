@@ -4,7 +4,7 @@ namespace HMC\Misc;
 /*
  * data Helper - common data lookup methods
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 1.0
  * @date March 28, 2015
  * @date May 18 2015

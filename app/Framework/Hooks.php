@@ -4,7 +4,7 @@ namespace HMC;
 /*
  * Hooks controller
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 2.2
  * @date updated May 18 2015
  */

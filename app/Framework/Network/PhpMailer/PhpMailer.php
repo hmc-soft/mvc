@@ -9,9 +9,9 @@ require('Exception.php');
  * PHPMailer - PHP email creation and transport class.
  * PHP Version 5
  * @package PHPMailer
- * @link https://github.HMC/PHPMailer/PHPMailer/ The PHPMailer GitHub project
+ * @link https://github.com/PHPMailer/PHPMailer/ The PHPMailer GitHub project
  * @author Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
- * @author Jim Jagielski (jimjag) <jimjag@gmail.HMC>
+ * @author Jim Jagielski (jimjag) <jimjag@gmail.com>
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  * @copyright 2012 - 2014 Marcus Bointon
@@ -27,7 +27,7 @@ require('Exception.php');
  * PHPMailer - PHP email creation and transport class.
  * @package PHPMailer
  * @author Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
- * @author Jim Jagielski (jimjag) <jimjag@gmail.HMC>
+ * @author Jim Jagielski (jimjag) <jimjag@gmail.com>
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  */
@@ -221,7 +221,7 @@ class PhpMailer
      * Either a single hostname or multiple semicolon-delimited hostnames.
      * You can also specify a different port
      * for each host by using this format: [hostname:port]
-     * (e.g. "smtp1.example.HMC:25;smtp2.example.HMC").
+     * (e.g. "smtp1.example.com:25;smtp2.example.com").
      * Hosts will be tried in order.
      * @type string
      */
@@ -388,7 +388,7 @@ class PhpMailer
 
     /**
      * DKIM signing domain name.
-     * @example 'example.HMC'
+     * @example 'example.com'
      * @type string
      */
     public $DKIM_domain = '';
@@ -845,7 +845,7 @@ class PhpMailer
      * @param string $address The email address to check
      * @param string $patternselect A selector for the validation pattern to use :
      * * `auto` Pick strictest one automatically;
-     * * `pcre8` Use the squiloople.HMC pattern, requires PCRE > 8.0, PHP >= 5.3.2, 5.2.14;
+     * * `pcre8` Use the squiloople.com pattern, requires PCRE > 8.0, PHP >= 5.3.2, 5.2.14;
      * * `pcre` Use old PCRE implementation;
      * * `php` Use PHP built-in FILTER_VALIDATE_EMAIL; same as pcre8 but does not allow 'dotless' domains;
      * * `html5` Use the pattern given by the HTML5 spec for 'email' type form input elements.
@@ -879,7 +879,7 @@ class PhpMailer
             case 'pcre8':
                 /**
                  * Uses the same RFC5322 regex on which FILTER_VALIDATE_EMAIL is based, but allows dotless domains.
-                 * @link http://squiloople.HMC/2009/12/20/email-address-validation/
+                 * @link http://squiloople.com/2009/12/20/email-address-validation/
                  * @copyright 2009-2010 Michael Rushton
                  * Feel free to use and redistribute this code. But please keep this copyright notice.
                  */
@@ -1432,7 +1432,7 @@ class PhpMailer
      * @param array $addr An array of recipient,
      * where each recipient is a 2-element indexed array with element 0 containing an address
      * and element 1 containing a name, like:
-     * array(array('joe@example.HMC', 'Joe User'), array('zoe@example.HMC', 'Zoe User'))
+     * array(array('joe@example.com', 'Joe User'), array('zoe@example.com', 'Zoe User'))
      * @return string
      */
     public function addrAppend($type, $addr)
@@ -1448,7 +1448,7 @@ class PhpMailer
      * Format an address for use in a message header.
      * @access public
      * @param array $addr A 2-element indexed array, element 0 containing an address, element 1 containing a name
-     *      like array('joe@example.HMC', 'Joe User')
+     *      like array('joe@example.com', 'Joe User')
      * @return string
      */
     public function addrFormat($addr)
@@ -1691,7 +1691,7 @@ class PhpMailer
         if ($this->XMailer == '') {
             $result .= $this->headerLine(
                 'X-Mailer',
-                'PHPMailer ' . $this->Version . ' (https://github.HMC/PHPMailer/PHPMailer/)'
+                'PHPMailer ' . $this->Version . ' (https://github.com/PHPMailer/PHPMailer/)'
             );
         } else {
             $myXmailer = trim($this->XMailer);

@@ -5,15 +5,10 @@ namespace HMC\Security;
  * password class that uses a compatibility library with PHP 5.5's simplified password hashing API. (located in the vendor directory)
  * passes data to password compatibility library, this will add compatability up for php 5.5 at which point the built in functions will be used instead.
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 2.2
  * @date May 18, 2015
  */
-
-if (!defined('PASSWORD_BCRYPT')) {
-    define('PASSWORD_BCRYPT', 1);
-    define('PASSWORD_DEFAULT', PASSWORD_BCRYPT);
-}
 
 class Password
 {
@@ -27,7 +22,7 @@ class Password
      *
      * @return string|false The hashed password, or false on error.
      */
-    public static function make($password, $algo = PASSWORD_BCRYPT, array $options = array())
+    public static function make($password, $algo = 1, array $options = array())
     {
         return password_hash($password, $algo, $options);
     }

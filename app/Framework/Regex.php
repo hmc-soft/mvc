@@ -3,8 +3,8 @@
 namespace HMC;
 
 /**
- * Verbal Expressions v0.1 (https://github.HMC/jehna/VerbalExpressions) ported in PHP
- * @author Mihai Ionut Vilcu (ionutvmi@gmail.HMC)
+ * Verbal Expressions v0.1 (https://github.com/jehna/VerbalExpressions) ported in PHP
+ * @author Mihai Ionut Vilcu (ionutvmi@gmail.com)
  * 22.July.2013
  */
 

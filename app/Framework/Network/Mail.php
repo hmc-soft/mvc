@@ -6,7 +6,7 @@ use HMC\Network\PhpMailer;
 /*
  * Mail Helper
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 1.0
  * @date May 18 2015
  */

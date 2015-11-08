@@ -4,7 +4,7 @@ namespace HMC\Misc;
 /*
  * Number Class, contains methods for converting number formats and getting a percentage
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 2.2
  * @date May 18 2015
  */

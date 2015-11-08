@@ -650,7 +650,7 @@ class GUMP
         $text = urlencode($value);
 
         $translation = file_get_contents(
-            "http://ajax.googleapis.HMC/ajax/services/language/translate?v=1.0&q={$text}&langpair={$input_lang}|{$output_lang}"
+            "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q={$text}&langpair={$input_lang}|{$output_lang}"
         );
 
         $json = json_decode($translation, true);
@@ -1291,7 +1291,7 @@ class GUMP
      * @param  string $field
      * @param  array $input
      * @return mixed
-     * @see http://pastebin.HMC/UvUPPYK0
+     * @see http://pastebin.com/UvUPPYK0
      */
 
     /*
@@ -1347,7 +1347,7 @@ class GUMP
     /**
      * Determine if the input is a valid credit card number
      *
-     * See: http://stackoverflow.HMC/questions/174730/what-is-the-best-way-to-validate-a-credit-card-in-php
+     * See: http://stackoverflow.com/questions/174730/what-is-the-best-way-to-validate-a-credit-card-in-php
      * Usage: '<index>' => 'valid_cc'
      *
      * @access protected
@@ -1408,9 +1408,9 @@ class GUMP
     }
 
     /**
-     * Determine if the input is a valid human name [Credits to http://github.HMC/ben-s]
+     * Determine if the input is a valid human name [Credits to http://github.com/ben-s]
      *
-     * See: https://github.HMC/Wixel/GUMP/issues/5
+     * See: https://github.com/Wixel/GUMP/issues/5
      * Usage: '<index>' => 'valid_name'
      *
      * @access protected

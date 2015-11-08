@@ -4,7 +4,7 @@ namespace HMC\Misc;
 /*
  * GeoCode Helper - collection of methods for working with Google's GeoCoder
  *
- * @author Mark Parrish - mark@pipcommunications.HMC - http://www.pipcommunications.HMC
+ * @author Mark Parrish - mark@pipcommunications.com - http://www.pipcommunications.com
  * @version 1.0
  * @date April 27, 2015
  * @date May 18 2015

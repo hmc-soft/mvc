@@ -4,7 +4,7 @@ namespace HMC\Document;
 /*
  * Tags Class
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @version 2.2
  * @date May 18 2015
  */

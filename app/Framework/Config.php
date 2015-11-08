@@ -7,7 +7,7 @@ use HMC\Session;
  * config - an example for setting up system settings
  * When you are done editing, rename this file to 'config.php'
  *
- * @author David Carr - dave@simplemvcframework.HMC
+ * @author David Carr - dave@simplemvcframework.com
  * @author Edwin Hoksberg - info@edwinhoksberg.nl
  * @version 2.2
  * @date June 27, 2014
@@ -39,7 +39,9 @@ class Config
           'TITLE' => 'v1.0',
           'EMAIL' => '',
           'TEMPLATE' => 'default',
-          'LANGUAGE' => 'en',
+          'LANGUAGE' => null,
+          'LANGUAGES' => array('de','en','fr','it','nl','pl','ro','ru'),
+          'DEFAULTLANG' => 'en',
           'TIMEZONE' => 'America/Chicago'
         ),
         'DATABASE' => array(
@@ -102,6 +104,25 @@ class Config
           self::$options = (array) self::merge_defaults($defaults,(array)$opts);
         }
 
+        if(self::$options['SITE']['LANGUAGE'] == null) {
+          //try to figure if we support the user's language.
+           $userlangs = explode(';',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+           $foundLang = false;
+           foreach(self::$options['SITE']['LANGUAGES'] as $ourLang) {
+             if(!$foundLang) {
+               foreach($userlangs as $ulang) {
+                 if(!$foundLang && $ulang === $ourLang) {
+                   self::$options['SITE']['LANGUAGE'] = $ourLang;
+                   $foundLang = true;
+                 }
+               }
+             }
+           }
+           if(!$foundLang) {
+             self::$options['SITE']['LANGUAGE'] = self::$options['SITE']['DEFAULTLANG'];
+           }
+        }
+
         if(isset(self::$options['SITE'])) {
           if(isset(self::$options['ENVIRONMENT'])) {
             if(self::$options['SITE']['ENVIRONMENT'] == 'development') {
@@ -158,6 +179,7 @@ class Config
             if(isset(self::$options[$oarr[0]]) && isset(self::$options[$oarr[0]][$oarr[1]])){
               return self::$options[$oarr[0]][$oarr[1]];
             } else {
+              return null;
               throw new \InvalidArgumentException('No option set in: ' . $opt);
             }
           } else {
@@ -167,6 +189,7 @@ class Config
           if(isset(self::$options[$oarr[0]])){
             return self::$options[$oarr[0]];
           } else {
+            return null;
             throw new \InvalidArgumentException('No option set in: ' . $opt);
           }
         }
