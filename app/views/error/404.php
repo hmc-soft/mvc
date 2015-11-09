@@ -1,3 +1,6 @@
+<?php
+use \HMC\Language;
+?>
 <style>
 	body {
 		background-color: #ccc;
