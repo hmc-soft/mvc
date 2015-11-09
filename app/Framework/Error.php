@@ -60,7 +60,7 @@ class Error extends Controller
           break;
       }
         if($info != null)
-            Logger::error('['.$errNum.'] ' . $info);
+            Logger::error('['.$errNum.'] ' . strip_tags($info));
 
       $data['title'] = Language::tr('500_title');
       $data['error'] = $info != null ? (Config::SITE_ENVIRONMENT() == 'development' ? $defError . '<br/>'. $info : $defError) : $defError;
