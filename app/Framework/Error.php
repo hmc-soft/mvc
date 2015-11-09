@@ -6,12 +6,10 @@ use HMC\View;
 use HMC\Language;
 
 /*
- * error class - calls a 404 page
+ * error class - displays and potentially logs an error.
  *
+ * @author Ebben Feagan - ebben@hmc-soft.com
  * @author David Carr - dave@simplemvcframework.com
- * @version 2.2
- * @date June 27, 2014
- * @date updated May 18 2015
  */
 class Error extends Controller
 {
@@ -31,7 +29,7 @@ class Error extends Controller
         $this->error = $error;
     }
 
-    public static function error404() {
+    private static function error404() {
       Language::load('Errors');
       View::addHeader("HTTP/1.0 404 Not Found");
 
@@ -43,6 +41,12 @@ class Error extends Controller
       View::renderTemplate('footer', $data);
     }
 
+    /**
+    * Show an error message to the user and log the error if needed.
+    * Current 404 errors are not logged. This function ends execution.
+    * @param $errNum int the HTTP error code to return, typically 404 for missing page or 500.
+    * @param $info string (optional) with the message to log, not displayed in production.
+    */
     public static function showError($errNum, $info = null) {
 
       Language::load('Errors');
@@ -52,7 +56,7 @@ class Error extends Controller
       switch($errNum) {
         case 404:
           Error::error404();
-          return;
+          die;
           break;
 
         case 500:
