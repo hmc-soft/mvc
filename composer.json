@@ -5,6 +5,7 @@
     "require": {
         "tedivm/jshrink": "~1.0",
         "katzgrau/klogger":"~1.0",
+        "Gregwar/captcha":"~1.0",
         "php": ">=5.4.0"
     },
     "suggest": {
