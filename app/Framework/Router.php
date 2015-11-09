@@ -144,7 +144,9 @@ class Router
         $uri = ($amp = strpos($uri, '&')) !== false ? substr($uri, 0, $amp) : $uri;
 
         $parts = explode('/', $uri);
-        if($parts[0] == 'index.php')
+        if($parts[0] == 'index.php'
+         || $parts[0] == str_replace('/','',Config::SITE_PATH())
+        )
           unset($parts[0]);
 
         $controller = array_shift($parts);
