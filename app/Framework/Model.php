@@ -54,8 +54,8 @@ abstract class Model
       if($this->values == null) {
         throw new \Exception("No data to get, you must perform a query first.");
       }
-      if(isset($this->values[$fname])) {
-        return $this->values[$fname];
+      if(isset($this->values[0][$fname])) {
+        return $this->values[0][$fname];
       } else {
         throw new \Exception("No field exists with the name: $fname");
       }
@@ -65,10 +65,13 @@ abstract class Model
     * Allows access to set field values using $model->fieldName = 'value';
     */
     public function __set($fname,$value) {
-      if($this->values == null) {
-        $this->values = array();
+      if(!in_array($fname,$this->fields)) {
+        throw new \Exception("No field exists with the name: $fname");
       }
-      $this->values[$fname] = $value;
+      if($this->values == null) {
+        $this->values = array( 0 => array() );
+      }
+      $this->values[0][$fname] = $value;
       $this->dirty = true;
     }
 
@@ -80,10 +83,10 @@ abstract class Model
     * `SELECT fields... FROM MyModel WHERE (parent = '1') AND (type = 'menu');`
     * @param $id- the value of the primary key of the record to retrieve or an array of key => values that will form the where statement.
     */
-    public static function get($id) {
-      $ret = new self();
-      if($ret->pk == null) {
-        throw new \Exception("Primary key not defined for " . $ret->name);
+    public function get($id) {
+
+      if($this->pk == null) {
+        throw new \Exception("Primary key not defined for " . $this->name);
       }
       $passArray = false;
       if(is_array($id)) {
@@ -94,13 +97,14 @@ abstract class Model
         }
         $where = rtrim($where," AND ");
       } else {
-        $where = "{$ret->pk} = :{$ret->pk}";
+        $where = "{$this->pk} = :{$this->pk}";
       }
-      $ret->values = $ret->db->select(
-        "SELECT " . join(",",$ret->fields) . " FROM {$ret->name} WHERE $where;",
-        ($passArray ? $id : array($ret->pk => $id))
+      $this->values = $this->db->select(
+        "SELECT " . join(",",$this->fields) . " FROM {$this->name} WHERE $where;",
+        ($passArray ? $id : array($this->pk => $id))
       );
-      return $ret->values == null;
+      $this->new = false;
+      return $this->values == null;
     }
 
     /**
@@ -109,17 +113,19 @@ abstract class Model
     * @param $vals array containing key/value pairs to bind to where statement.
     * @return array of Model objects with results.
     */
-    public static function search($query,$vals) {
-      $ret = new self();
-      $results = $ret->db->select(
-        "SELECT " . join(",",$ret->fields) . " FROM {$ret->name} WHERE {$query}",
+    public function search($query,$vals) {
+      $cname = get_class($this);
+      $results = $this->db->select(
+        "SELECT " . join(",",$this->fields) . " FROM {$this->name} WHERE {$query}",
         $vals
       );
+
       $retArray = array();
       foreach($results as $result) {
-        $i = new self($ret->db,$result);
+        $i = new $cname($this->db,$result);
         $retArray[] = $i;
       }
+
       return $retArray;
     }
 
@@ -134,9 +140,13 @@ abstract class Model
       $this->dirty = false;
       if($this->new) {
         $this->new = false;
-        return $this->db->insert($this->name, $this->values);
+        return $this->db->insert($this->name, $this->values[0]);
       } else {
-        return $this->db->update($this->name, $this->values, array($this->pk => $this->values[$this->pk]));
+        return ($this->db->update(
+          $this->name,
+          $this->values[0],
+          array($this->pk => $this->values[0][$this->pk])
+        ) == 1 ? $this->values[0][$this->pk] : false);
       }
     }
 
@@ -148,7 +158,7 @@ abstract class Model
       if($this->pk == null) {
         throw new \Exception("Primary key not defined for " . $this->name);
       }
-      $this->db->delete($this->name, array($this->pk => $this->values[$this->pk]));
+      $this->db->delete($this->name, array($this->pk => $this->values[0][$this->pk]));
       $this->dirty = false;
       unset($this->values);
       $this->values = null;
@@ -162,12 +172,17 @@ abstract class Model
       //connect to PDO here.
       if($dbo == null){
         $this->db = Connection::get();
+        $this->new = true;
+        if($valuesArray != null) $this->dirty = true;
       } else {
+        $this->new = false;
         $this->db = $dbo;
       }
 
       $this->alias(get_class($this));
 
-      $this->values = $valuesArray;
+	     if($valuesArray != null) {
+         $this->values = array($valuesArray);
+       }
     }
 }
