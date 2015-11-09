@@ -123,12 +123,19 @@ class Table {
   /**
   * Retrieve an array of each field name.
   */
-  public function fields() {
+  public function fieldNames() {
     $out = array();
     foreach($this->tblFields as $field) {
       $out[] = $field['name'];
     }
     return $out;
+  }
+
+  /**
+  * Retrieve all info about fields.
+  */
+  public function fieldDetails() {
+    return $this->tblFields;
   }
 
   /**
