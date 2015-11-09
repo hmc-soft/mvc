@@ -4,16 +4,14 @@ namespace HMC\Document;
 /*
  * Document Helper - collection of methods for working with documents
  *
+ * @author Ebben Feagan - ebben@hmc-soft.com
  * @author David Carr - dave@simplemvcframework.com
- * @version 1.0
- * @date updated Feb 07, 2015
- * @date May 18 2015
  */
 
 class Document
 {
     /**
-     * group types into collections, its purpose is to assign the passed extension to the suitable group
+     * Determine the "type" of the file based on the extension.
      * @param  string $extension file extension
      * @return string            group name
      */
@@ -112,7 +110,7 @@ class Document
     }
 
     /**
-     * return the bytes file of a folder
+     * return the size of a folder in bytes
      * @param string $path
      * @return string
      */
@@ -141,7 +139,7 @@ class Document
     }
 
     /**
-     * return the file type based on the filename provided
+     * return the file extension based on the filename provided
      * @param  string $file
      * @return string
      */

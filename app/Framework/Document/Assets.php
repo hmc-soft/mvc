@@ -2,12 +2,12 @@
 namespace HMC\Document;
 
 /**
- * Assets static helper
+ * Helper to ease inclusion of scripts and stylesheets with optional optimization.
  *
+ * @author Ebben Feagan - ebben@hmcsoft.com
  * @author volter9
  * @author QsmaPL
- * @date 27th November, 2014
- * @date May 18 2015
+
  */
 
 class Assets
@@ -22,7 +22,7 @@ class Assets
     );
 
     /**
-     * Common templates for assets.
+     * Template function that does the low-level output writing.
      *
      * @param string|array $files
      * @param string       $template
@@ -41,7 +41,7 @@ class Assets
     }
 
     /**
-     * Output script
+     * Javascript (unoptimized) helper.
      *
      * @param array|string $file
      */
@@ -50,6 +50,16 @@ class Assets
         static::resource($files, 'js');
     }
 
+    /**
+    * Javascript (optimized) helper.
+    * All scripts are optimized for download size and formed into a single file.
+    * Optimization is done by JShrink\Minimizer.
+    *
+    * This file is updated automatically if the files change.
+    *
+    * @param $files - array of files to include
+    * @param $outputdir - where to place the generated files, default is typically adequate.
+    */
     public static function combine_js($files,$outputdir = 'static/generated/')
     {
       if(\HMC\Config::SITE_ENVIRONMENT() == 'development') {
@@ -106,6 +116,13 @@ class Assets
         static::resource($files, 'css');
     }
 
+    /**
+    * Output optimized stylesheet.
+    * This function will combine multiple stylesheets into a single sheet.
+    * It will also perform some basic optimizations to reduce download size.
+    * @param $files - array of files to include
+    * @param $outputdir - where to store generated file(s), default is typically adequate.
+    */
     public static function combine_css($files,$outputdir = 'static/generated/')
     {
       if(\HMC\Config::SITE_ENVIRONMENT() == 'development') {

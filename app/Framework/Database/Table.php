@@ -1,9 +1,21 @@
 <?php
 namespace HMC\Database;
 
+/**
+* Represents a Table in a Database.
+*
+* @author Ebben Feagan - ebben@hmc-soft.com
+*/
 class Table {
 
+  /**
+  * Specifies a field as being able to be NULL.
+  */
   const NULLABLE = 'NULL';
+
+  /**
+  * Specifies a field as not being able to be NULL.
+  */
   const NOT_NULL = 'NOT NULL';
 
   private $tblName = '';
@@ -99,7 +111,6 @@ class Table {
   /**
   * Retrieve or set the database connection used for creating / comparing.
   * @param $dbConnection (optional) - if set this will become the new connection
-  *
   * @return The connection that will be used from now on.
   */
   public function connection($dbConnection = null) {
@@ -159,6 +170,7 @@ class Table {
   * Note: This does not return the complete statement, you must add
   * CREATE TABLE to the beginning to actually use this.
   * @return The proper SQL string to create the table or null if in error.
+  * @throws Exception if a duplicate primary key is defined.
   */
   public function compile() {
     $sql = "{$this->tblName} (";
@@ -213,7 +225,7 @@ class Table {
   /**
   * Create the table in the database.
   * @param $onlyNew (optional) - only create the table if its not already there.
-  * @return true if the table was created, or false otherwise.
+  * @return true if the table was created or already exists, false otherwise.
   */
   public function create($onlyNew = false) {
     $compiled = $this->compile();
@@ -245,6 +257,7 @@ class Table {
   /**
   * Does a table with the same name exist in the database.
   * @return boolean
+  * @throws Exception if the method is not implemented for the current db driver.
   */
   public function exists() {
     $retVal = false;
@@ -285,6 +298,7 @@ class Table {
   * @param $name - the name of the table in the database.
   * @param $db - the PDO Database object.
   * @return Table or null
+  * @throws Exception if method is not implemented for this db driver.
   */
   public static function fromDB($name,$db) {
     if($db === null) return null;
@@ -329,6 +343,8 @@ class Table {
 
   /**
   * Report differences between the passed table and this one.
+  * @param $rhs Table to compare to
+  * @return Array of fields that are different with the different values.
   */
   public function diff(Table $rhs) {
     $ourFields = $this->tblFields;

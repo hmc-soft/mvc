@@ -2,7 +2,7 @@
 
 namespace HMC\Database;
 
-/*
+/**
  * PHP Pagination Class
  *
  * @author David Carr - dave@simplemvcframework.com
@@ -130,25 +130,25 @@ class Paginator
      *
      * There are also other ORM's that need the skip and take
      * parameters separated.
-     * 
+     *
      * Example in controller method calling model method:
-     * 
+     *
      * $data['pets'] = $this->pet->getPets($pages->getLimit2(), $pages->getPerPage(), $petSearch);
-     * 
+     *
      * Example model method using Eloquent Query Builder:
-     * 
+     *
      * public function getPets($offset = "", $rowsPerPage = "", $petSearch = "")
      * {
      *     $petsearch = $petsearch . "%";
-     *     
+     *
      *     return Capsule::table('pets')
      *                     ->where('petName', 'like', $petsearch)
      *                     ->orderBy('petName', 'asc')
      *                     ->skip($offset)->take($rowsPerPage)->get();
      * }
-     * 
+     *
      * Also see the file in the helpers folder page_eloq.md for more help.
-     * 
+     *
      * @var numeric
      */
     public function getLimit2()

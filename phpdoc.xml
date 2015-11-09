@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+  <title>HMC-soft MVC</title>
+  <parser>
+    <target>docs</target>
+  </parser>
+  <transformer>
+    <target>docs</target>
+  </transformer>
+  <files>
+    <directory>app/Framework</directory>
+    <ignore>app/Framework/Modules/*</ignore>
+  </files>
+</phpdoc>

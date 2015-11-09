@@ -1,15 +1,16 @@
 <?php
+
 namespace HMC\Database;
 
 use PDO;
 
-/*
- * database Helper - extending PDO to use custom methods
+/**
+ * Represents a connection to a database.
  *
+ * Extends the base PDO class to have helpful wrappers for common SQL statements.
+ *
+ * @author Ebben Feagan - ebben@hmc-soft.com
  * @author David Carr - dave@simplemvcframework.com
- * @version 2.1
- * @date June 27, 2014
- * @date May 18 2015
  */
 class Connection extends PDO
 {
@@ -19,10 +20,10 @@ class Connection extends PDO
     protected static $instances = array();
 
     /**
-     * Static method get
+     * Get an instance of a preexisting Connection or a new instance.
      *
      * @param  array $group
-     * @return \helpers\database
+     * @return \HMC\Database\Connection
      */
     public static function get($group = false)
     {
@@ -172,7 +173,6 @@ class Connection extends PDO
     /**
      * Delete method
      * @param  string $table table name
-     * @param  array $data  array of columns and values
      * @param  array $where array of columns and values
      * @param  integer $limit limit number of records
      */
