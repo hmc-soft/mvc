@@ -91,26 +91,38 @@ class Hooks
     }
 
     //attach custom function to hook
-    public static function addHook($where, $function)
+    public static function addHook($where, $function, $priority = 10)
     {
         self::get();
         if (!isset(self::$hooks[$where])) {
             die("There is no such place ($where) for hooks.");
         } else {
-            self::$hooks[$where][] = $function;
+          if(!is_int($priority)) $priority = 10;
+          if($priority < 0) $priority = 0;
+          if($priority > 99) $priority = 99;
+          self::$hooks[$where][] = array( 'func' => $function, 'pri' => $priority);
         }
+    }
+
+    private static function sortHook($where) {
+      $hsort = function($a, $b) {
+        if($a['pri'] == $b['pri']) return 0;
+        return ($a['pri'] < $b['pri'] ? -1 : 1);
+      };
+      usort(self::$hooks[$where],$hsort);
     }
 
     public static function run($where, $args = '')
     {
       self::get();
       if (isset(self::$hooks[$where])) {
+          self::sortHook($where);
           $result = $args;
 
           foreach (self::$hooks[$where] as $hook) {
-              if (preg_match("/@/i", $hook)) {
+              if (preg_match("/@/i", $hook['func'])) {
                   //grab all parts based on a / separator
-                  $parts = explode('\\', $hook);
+                  $parts = explode('\\', $hook['func']);
 
                   //collect the last index of the array
                   $last = end($parts);
@@ -122,11 +134,11 @@ class Hooks
                   $result = call_user_func(array($classname, $segments[1]), $result);
 
               } else {
-                  if (function_exists($hook)) {
-                      $result = call_user_func($hook, $result);
+                  if (function_exists($hook['func'])) {
+                      $result = call_user_func($hook['func'], $result);
                   } else {
-                    if(is_callable($hook)) {
-                      $result = $hook($result);
+                    if(is_callable($hook['func'])) {
+                      $result = $hook['func']($result);
                     }
                   }
               }
