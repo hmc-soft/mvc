@@ -30,13 +30,22 @@ class Hooks
 
         //define hooks
         self::setHooks(array(
+            'init',
+            'pre-config',
+            'config',
+            'config-ready',
+            'get-database',
+            'pre-headers',
             'headers',
             'meta',
             'css',
+            'end-head',
+            'beforeBody',
             'afterBody',
             'footer',
             'js',
-            'routes'
+            'routes',
+            'pre-dispatch'
         ));
 
         //load modules
@@ -50,7 +59,7 @@ class Hooks
     //adds hook to hook list
     public static function setHook($where)
     {
-        self::$hooks[$where] = '';
+        if(!isset(self::$hooks[$where])) self::$hooks[$where] = array();
     }
 
     //add multiple hooks
@@ -69,7 +78,12 @@ class Hooks
                     require_once $fromFolder . $file;
                     self::$plugins [$file] ['file'] = $file;
                 } elseif ((is_dir($fromFolder.$file)) && ($file != '.') && ($file != '..')) {
+                  if(is_readable($fromfolder.$file.'/'.$file.'.php')) {
+                    require_once $fromFolder . $file . '/' . $file . '.php';
+                    self::$plugins [$file] ['file'] = $file;
+                  } else {
                     self::loadPlugins($fromFolder.$file.'/');
+                  }
                 }
             }
             closedir($handle);
@@ -79,26 +93,21 @@ class Hooks
     //attach custom function to hook
     public static function addHook($where, $function)
     {
-      echo '<!-- |'. $where . '=>'.$function .' -->';
+        self::get();
         if (!isset(self::$hooks[$where])) {
             die("There is no such place ($where) for hooks.");
         } else {
-            $theseHooks = explode('|', self::$hooks[$where]);
-            $theseHooks[] = $function;
-            self::$hooks[$where] = implode('|', $theseHooks);
-
+            self::$hooks[$where][] = $function;
         }
     }
 
     public static function run($where, $args = '')
     {
-      echo '<!-- running ' . $where . ' -->';
+      self::get();
       if (isset(self::$hooks[$where])) {
-          $theseHooks = explode('|', self::$hooks[$where]);
           $result = $args;
 
-          foreach ($theseHooks as $hook) {
-            echo '<!-- ' . $hook . ' -->';
+          foreach (self::$hooks[$where] as $hook) {
               if (preg_match("/@/i", $hook)) {
                   //grab all parts based on a / separator
                   $parts = explode('\\', $hook);
@@ -115,6 +124,10 @@ class Hooks
               } else {
                   if (function_exists($hook)) {
                       $result = call_user_func($hook, $result);
+                  } else {
+                    if(is_callable($hook)) {
+                      $result = $hook($result);
+                    }
                   }
               }
           }
@@ -127,8 +140,9 @@ class Hooks
 
     public static function collectHook($where, $args = null)
     {
+        self::get();
         ob_start();
-            echo self::run($where, $args);
+        echo self::run($where, $args);
         return ob_get_clean();
     }
 }

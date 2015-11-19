@@ -17,8 +17,10 @@ use HMC\View;
 $configFile = '.app_config.json';
 
 //initiate config
+Hooks::run('init');
+$configFile = Hooks::run('pre-config',$configFile);
 $config = Config::init($configFile);
-Hooks::get();
+Hooks::run('config-ready');
 Hooks::addHook('headers','addNotice');
 
 
@@ -31,6 +33,7 @@ Router::init($config);
 //To route with the url/Controller/Method/args schema uncomment this.
 Router::$fallback = true;
 
+Hooks::run('pre-dispatch');
 //execute matched routes
 Router::dispatch();
 

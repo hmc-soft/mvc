@@ -22,38 +22,48 @@ class Language
     private static $lastLoaded = null;
 
     /**
+     * pLoad language function
+     * @param  string $name - the name of the language file to load
+     * @param  string $code - (optional, defaults to SITE_LANGUAGE) the language code to load, i.e. en = english, fr = french
+     * @param  string $fileTemplate - (optional, defaults to app/Language dir) for plugins to load their lang files
+     */
+    public static function pload($name, $icode = null, $fileTemplate = 'app/Language/[code]/[name].php') {
+      if($icode == null) {
+        self::$code = \HMC\Config::SITE_LANGUAGE();
+      } else {
+          self::$code = $icode;
+      }
+      // lang file
+      $file = str_replace('[code]',self::$code,$fileTemplate);
+      $file = str_replace('[name]',$name,$file);
+
+      // check if is readable
+      if (is_readable($file)) {
+          // require file
+          if(!isset(self::$array[$name]))
+              self::$array[$name] = array();
+
+          if(empty(self::$array[$name][self::$code]))
+              self::$array[$name][self::$code] = include($file);
+
+          return true;
+      } else {
+          return false;
+      }
+    }
+
+    /**
      * Load language function
-     * @param  string $name
-     * @param  string $code
+     * @param  string $name - the name of the language file to load
+     * @param  string $code - (optional, defaults to SITE_LANGUAGE) the language code to load, i.e. en = english, fr = french
      */
     public static function load($name, $icode = null)
     {
-
-        if($icode == null) {
-          self::$code = \HMC\Config::SITE_LANGUAGE();//(\HMC\Config::SITE_LANGUAGE() !== '' ? \HMC\Config::SITE_LANGUAGE() : 'en');
-        } else {
-            self::$code = $icode;
-        }
-        // lang file
-        $file = "app/Language/".self::$code."/$name.php";
-
-        // check if is readable
-        if (is_readable($file)) {
-            // require file
-            if(!isset(self::$array[$name]))
-                self::$array[$name] = array();
-
-            if(empty(self::$array[$name][self::$code]))
-                self::$array[$name][self::$code] = include($file);
-
-            self::$lastLoaded = $name;
-            return true;
-        } else {
-            // display error
-            //echo Error::display("Could not load language file '".self::$code."/$name.php'");
-            //die;
-            return false;
-        }
+      if(self::pload($name,$icode)) {
+        self::$lastLoaded = $name;
+        return true;
+      }
+      return false;
     }
 
     /**

@@ -104,6 +104,8 @@ class Config
           self::$options = (array) self::merge_defaults($defaults,(array)$opts);
         }
 
+        self::$options = Hooks::run('config',self::$options);
+
         if(self::$options['SITE']['LANGUAGE'] == null) {
           //try to figure if we support the user's language.
            $userlangs = explode(';',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
